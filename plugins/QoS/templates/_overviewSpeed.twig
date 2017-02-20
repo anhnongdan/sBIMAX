@@ -1,0 +1,18 @@
+<div id="userSpeedGauge"></div>
+
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		$('#userSpeedGauge').barometerWidget({
+			interval: 5000,
+			dataUrlParams: {
+				module: 'API',
+				method: 'QoS.overViewSpeedGraph',
+				format: 'json',
+				metric: 'avg_speed',
+			},
+			label: '{{ "QoS_UserSpeed"|translate }}',
+			valueName: 'user_speed',
+			maxValueName: 'maxtime'
+		});
+	});
+</script>

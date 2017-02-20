@@ -1,0 +1,3 @@
+[submodule "BimaxCore"]
+	path = BimaxCore
+	url = https://github.com/anhnongdan/BimaxCore.git

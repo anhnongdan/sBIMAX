@@ -1,0 +1,14 @@
+{
+    "LogViewer": {
+        "LogViewer": "Prikaz zapisa",
+        "Severity": "Severity",
+        "AnySeverity": "Any Severity",
+        "SearchPattern": "Izraz za pretragu",
+        "SearchHelp": "Pretraga razlikuje velika i mala slova. Ukoliko su uključeni regularni izrazi, znake poput '[' bi trebalo pisati '\\[' (escape).",
+        "Tag": "Oznaka",
+        "RequestId": "Identifikator zahteva",
+        "Message": "Poruka",
+        "NoSupportedLogWriterConfiguredTitle": "Program za pravljenje zapisa nije podešen",
+        "UseRegExp": "Koristi regularne izraze"
+    }
+}

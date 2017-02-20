@@ -1,0 +1,18 @@
+<div class="widget qos-widget" id="cacheHitGauge"></div>
+
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		$('#cacheHitGauge').barometerWidget({
+			interval: 5000,
+			dataUrlParams: {
+				module: 'API',
+				method: 'QoS.overViewCacheHitGraph',
+				format: 'json',
+				metric: 'isp_request_count_200_viettel',
+			},
+			label: '{{ "QoS_CacheHit"|translate }}',
+			valueName   : 'cache_hit',
+			maxValueName: 'maxtime'
+		});
+	});
+</script>

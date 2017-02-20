@@ -1,0 +1,15 @@
+{
+    "VisitorGenerator": {
+        "VisitorGenerator": "Generator odwiedzających",
+        "Warning": "Właśnie zamierzasz wygenerować symulowane odwiedziny, które zostaną zanotowane w bazie danych Piwik, tak jak realne.",
+        "NotReversible": "Usunięcie informacji z logów o takich odwiedzinach %1$s nie%2$s będzie takie łatwe, proste czy nawet możliwe.",
+        "AreYouSure": "Czy masz pewność, że chcesz uruchomić generację fałszywych symulowanych odwiedzin?",
+        "ChoiceYes": "Tak, mam taką pewność!",
+        "Submit": "Potwierdź",
+        "SelectWebsite": "Wybierz stronę",
+        "NbRequestsPerSec": "Zapytań na sekundę",
+        "DaysToCompute": "Dni do obliczeń",
+        "PleaseBePatient": "UWAGA: Generowanie wizyt i akcji może zająć kilka minut. Prosimy o cierpliwość.",
+        "NumberOfGeneratedActions": "Liczba wygenerowanych akcji"
+    }
+}

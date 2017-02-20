@@ -1,0 +1,26 @@
+{% extends isWidgetized ? 'empty.twig' : 'dashboard.twig' %}
+
+{% block topcontrols %}
+    {% if not isWidgetized %}
+        <div class="top_controls">
+            {% include "@CoreHome/_periodSelect.twig" %}
+            {% include "@CoreHome/_headerMessage.twig" %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container" id="multisites">
+
+    <div id="main">
+        <div piwik-multisites-dashboard
+             page-size="{{ limit }}" 
+ {#            show-sparklines="{% if show_sparklines %}true{% else %}false{%endif%}"
+             date-sparkline="{{ dateSparkline }}"#}
+             display-bandwidth-column="{% if displayBandwidthColumn %}true{% else %}false{%endif%}"
+             {#display-avgbandwidth-column="{% if displayAvgBandwidthColumn %}true{% else %}false{%endif%}"#}
+             auto-refresh-today-report="{{ autoRefreshTodayReport }}">
+        </div>
+    </div>
+</div>
+{% endblock %}

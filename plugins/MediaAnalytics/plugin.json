@@ -1,0 +1,30 @@
+{
+  "name": "MediaAnalytics",
+  "version": "2.0.3",
+  "description": "Grow your business with advanced video & audio analytics. Get powerful insights into how your audience watches your videos and listens to your audio.",
+  "theme": false,
+  "require": {
+    "piwik": ">=2.16.3-rc1,<3.0.0-b1"
+  },
+  "authors": [
+    {
+      "name": "InnoCraft",
+      "email": "contact@innocraft.com",
+      "homepage": "https://www.innocraft.com"
+    }
+  ],
+  "price": {
+    "base": 200
+  },
+  "support": {
+	    "email": "",
+	    "issues": "https://shop.piwik.org/submit-ticket",
+	    "docs": "https://plugins.piwik.org/MediaAnalytics#documentation"
+  },
+  "archive": {
+    "exclude": ["/tracker.js", "/CHANGELOG.md"]
+  },
+  "homepage": "https://www.media-analytics.net",
+  "license": "InnoCraft EULA",
+  "keywords": ["video", "audio", "media", "youtube", "vimeo", "html5", "analytics"]
+}

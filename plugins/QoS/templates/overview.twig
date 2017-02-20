@@ -1,0 +1,28 @@
+<div class="rơw">
+	<div class="col-md-6">
+		<div class="col-md-12">
+			{#{{ graphOverviewBw|raw }}#}
+			{% include "@QoS/_overviewBandwidth.twig" %}
+		</div>
+		<div class="col-md-12">
+			{% include "@QoS/_overviewCacheHit.twig" %}
+		</div>
+		<div class="col-md-12">
+			{#{{ graphIsp|raw }}#}
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="col-md-12">
+			{#{% include "@QoS/_overviewSpeed.twig" %}#}
+			{% include "@QoS/_overviewUserSpeed.twig" %}
+		</div>
+		<div class="col-md-12">
+		{{ graphHttpCode|raw }}
+		{# {% include "@QoS/_overviewHttpCode.twig" %} #}
+		</div>
+		<div class="col-md-12">
+		{#{{ graphCountry|raw }}#}
+		</div>
+	</div>
+</div>

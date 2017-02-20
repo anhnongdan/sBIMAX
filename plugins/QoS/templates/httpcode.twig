@@ -1,0 +1,9 @@
+<h2 piwik-enriched-headline data-graph-id="QoS.getIndexGraph">{{ 'QoS_HttpCode'|translate }}</h2>
+{% for httpCode in httpCodeGraphs %}
+	<div class="categoryEntry" style="clear:both">
+		<h2>{{ httpCode.title }}</h2>
+
+		{{ httpCode.graph|raw }}
+
+	</div>
+{% endfor %}

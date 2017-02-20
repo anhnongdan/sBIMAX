@@ -1,0 +1,78 @@
+{% if not isWidget %}
+<div class="row">
+    <div class="col-md-6">
+        {% endif %}
+        <div class="sparkline">
+            {{ sparkline(urlPlays)|raw }}
+            {{ 'MediaAnalytics_NbTotalPlays'|translate("<strong>"~nbPlays|number~"</strong>")|raw }}
+            {% if displayUniqueVisitors %}
+                {{ 'MediaAnalytics_NbTotalUniquePlays'|translate("<strong>"~nbUniquePlays|number~"</strong>")|raw }}
+            {% endif %}
+        </div>
+
+        <div class="sparkline">
+            {{ sparkline(urlVideoPlays)|raw }}
+            {{ 'MediaAnalytics_NbVideoPlays'|translate("<strong>"~nbVideoPlays|number~"</strong>")|raw }},
+            {{ 'MediaAnalytics_NbAudioPlays'|translate("<strong>"~nbAudioPlays|number~"</strong>")|raw }}
+        </div>
+
+        <div class="sparkline" title="{{ 'MediaAnalytics_ColumnDescriptionTotalTimeWatched'|translate }}">
+            {{ sparkline(urlTotalTimeWatched)|raw }}
+            {% set nbTotalTimeWatched=nbTotalTimeWatched|sumtime %}
+            {{ 'MediaAnalytics_NbTotalTimeSpent'|translate("<strong>"~nbTotalTimeWatched~"</strong>")|raw }}
+        </div>
+
+        <div class="sparkline" title="{{ 'MediaAnalytics_ColumnDescriptionPlayRate'|translate }}">
+            {{ sparkline(urlPlayRate)|raw }}
+            {{ 'MediaAnalytics_NbPlayRate'|translate("<strong>"~nbPlayRate~"</strong>")|raw }}
+        </div>
+
+        {% if displayImpressionRate %}
+
+            <div class="sparkline" title="{{ 'MediaAnalytics_ColumnDescriptionImpressionRate'|translate }}">
+                {{ sparkline(urlImpressionRate)|raw }}
+                {{ 'MediaAnalytics_NbImpressionRate'|translate("<strong>"~impressionRate~"</strong>")|raw }}
+            </div>
+
+        {% endif %}
+
+        {% if not isWidget %}
+    </div>
+    <div class="col-md-6">
+        {% endif %}
+
+        <div class="sparkline">
+            {{ sparkline(urlImpressions)|raw }}
+            {{ 'MediaAnalytics_NbTotalImpressions'|translate("<strong>"~nbImpressions|number~"</strong>")|raw }}
+            {% if displayUniqueVisitors %}
+                {{ 'MediaAnalytics_NbTotalUniqueImpressions'|translate("<strong>"~nbUniqueImpressions|number~"</strong>")|raw }}
+            {% endif %}
+        </div>
+
+        <div class="sparkline">
+            {{ sparkline(urlVideoImpressions)|raw }}
+            {{ 'MediaAnalytics_NbVideoImpressions'|translate("<strong>"~nbVideoImpressions|number~"</strong>")|raw }},
+            {{ 'MediaAnalytics_NbAudioImpressions'|translate("<strong>"~nbAudioImpressions|number~"</strong>")|raw }}
+        </div>
+
+        <div class="sparkline" title="{{ 'MediaAnalytics_ColumnDescriptionFinishes'|translate }}">
+            {{ sparkline(urlFinishes)|raw }}
+            {{ 'MediaAnalytics_NbFinishes'|translate("<strong>"~nbFinishes|number~"</strong>")|raw }}
+        </div>
+
+        <div class="sparkline" title="{{ 'MediaAnalytics_ColumnDescriptionFinishRate'|translate }}">
+            {{ sparkline(urlFinishRate)|raw }}
+            {{ 'MediaAnalytics_NbFinishRate'|translate("<strong>"~nbFinishRate~"</strong>")|raw }}
+        </div>
+
+        {% if not isWidget %}
+    </div>
+</div>
+{% endif %}
+
+{% include "_sparklineFooter.twig" %}
+
+
+
+
+

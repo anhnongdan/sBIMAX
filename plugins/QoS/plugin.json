@@ -1,0 +1,15 @@
+{
+	"name": "QoS",
+	"description": "Quality of Service",
+	"version": "1.0.8",
+	"keywords": ["log", "200", "300", "400", "500"],
+	"homepage": "http://sbddigital.com",
+	"license": "GPL v3+",
+	"authors": [
+		{
+			"name"      : "Vu Tran",
+			"email"     : "vutp@saobacdau.vn",
+			"homepage"  : "http://sbddigital.com"
+		}
+	]
+}

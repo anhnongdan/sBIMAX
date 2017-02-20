@@ -1,0 +1,23 @@
+{
+  "QoS" : {
+    "QoS": "QoS",
+    "Overview"    : "Overview",
+    "Requests_200": "Requests 200",
+    "Requests_400": "Requests 400",
+    "Requests_500": "Requests 500",
+    "LogRequests" : "Log Requests",
+    "NbAverage200": "%s average request 200",
+    "HttpCode"    : "HTTP Code",
+    "Bandwidth"   : "Băng thông",
+    "UserSpeed"   : "Tốc độ Download",
+    "CacheHit"    : "Cache Hit",
+    "ISP"         : "ISP",
+    "Country"     : "Quốc gia",
+    "code2xx"     : "Lỗi 2xx",
+    "code3xx"     : "Lỗi 3xx",
+    "code4xx"     : "Lỗi 4xx",
+    "code5xx"     : "Lỗi 5xx",
+    "The_percentage_of_http_code_2xx" : "Tỷ lệ mã http 2xx",
+    "UserSpeed_Message": " trong một giây"
+  }
+}

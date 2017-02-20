@@ -1,0 +1,30 @@
+<div class="mediaLiveReport">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>{{ 'MediaAnalytics_WidgetTitleMediaPlays'|translate }}</h2>
+            {{ currentPlays|raw }}
+        </div>
+        <div class="col-md-6">
+            <h2>{{ 'MediaAnalytics_WidgetTitleSpentTime'|translate }}</h2>
+            {{ currentTime|raw }}
+        </div>
+    </div>
+
+    <div class="row mostPlays">
+        <div class="col-md-6">
+            <h2>{{ 'MediaAnalytics_WidgetTitleMostPlaysLast3600'|translate }}</h2>
+            {{ mostPlays3600|raw }}
+        </div>
+        <div class="col-md-6">
+            <h2>{{ 'MediaAnalytics_WidgetTitleMostPlaysLast30'|translate }}</h2>
+            {{ mostPlays30|raw }}
+        </div>
+    </div>
+
+    <div class="row audienceMap">
+        <div class="col-md-12">
+            <h2>{{ 'MediaAnalytics_WidgetTitleAudienceMap'|translate }}</h2>
+            {{ map|raw }}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="widget qos-widget" id="overviewWidgetBandwidth">
+	<div class="widgetTop">
+		<h3 class="widgetName">
+			<span>{{ 'QoS_Bandwidth'|translate }}</span>
+		</h3>
+	</div>
+	<div class="widgetContent ng-scope">
+		<div class='overview-widget-bandwidth-widget' data-refreshAfterXSecs="{{ bw_refreshAfterXSecs }}" data-last-minutes="{{ bw_lastMinutes }}" data-translations="{{ bw_translations|json_encode }}">
+			<div class='overview-widget-bandwidth-counter' title="{{ bandwidth }}{{ 'QoS_UserSpeed_Message'|translate(bw_lastMinutes) | raw }}">
+				<div>{{ bandwidth }}</div>
+			</div>
+			<br/>
+
+			<div class='overview-widget-bandwidth-elaboration'>
+				{{ 'QoS_UserSpeed_Message'|translate(bw_lastMinutes) | raw }}
+			</div>
+		</div>
+		<script type="text/javascript">$(document).ready(function () {require('piwik/QoS').initOverviewBandwidthWidget();});</script>
+	</div>
+</div>

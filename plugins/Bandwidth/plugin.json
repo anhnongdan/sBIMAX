@@ -1,0 +1,19 @@
+{
+ "name": "Bandwidth",
+ "version": "0.1.2",
+ "description": "Monitor Bandwidth for each page, download, and measure overall traffic in bytes",
+ "theme": false,
+ "keywords": ["bandwidth", "filesize", "size", "download"],
+ "license": "GPL v3+",
+ "homepage": "http://piwik.org",
+ "require": {
+    "piwik": ">=2.14.0"
+ },
+ "authors": [
+     {
+         "name": "Piwik",
+         "email": "hello@piwik.org",
+         "homepage": "http://piwik.org"
+     }
+ ]
+}

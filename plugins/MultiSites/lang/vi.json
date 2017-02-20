@@ -1,0 +1,13 @@
+{
+    "MultiSites": {
+        "Evolution": "Sự tiến triển",
+        "LoadingWebsites": "Đang tải website",
+        "PluginDescription": "Xem và so sánh toàn bộ các website bạn quản lý",
+        "TopLinkTooltip": "So sánh các số liệu thống kê Web Analytics cho tất cả các trang web của bạn.",
+        "Pagination": "%1$s - %2$s trên %3$s",
+        "ColumnTotalOverallBandwidth" : "Tổng dung lượng",
+        "ColumnSumBandwidth": "Dung lượng luỹ kế",
+        "ColumnAvgBandwidth": "Băng thông trung bình",
+        "TotalVisitsPageviewsActionsBandwidth" : "(Tổng cộng: %1$s lượt truy cập, %2$s lượt xem trang, %3$s actions, %4$s dung lượng)"
+    }
+}

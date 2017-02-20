@@ -1,0 +1,10 @@
+{
+    "LogViewer": {
+        "LogViewer": "Loggvisare",
+        "Severity": "Stränghet",
+        "AnySeverity": "Lägg till stränghet",
+        "SearchPattern": "Sökmönster",
+        "Tag": "Tagg",
+        "Message": "Meddelande"
+    }
+}

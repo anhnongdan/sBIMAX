@@ -1,0 +1,15 @@
+{
+  "name": "MultiSites",
+  "version": "0.0.1",
+  "description": "This is a customized plugin of the MultiSites plugin by Piwik PRO. The All Websites Dashboard shows Overall and Average Bandiwdth for each web site.",
+  "theme": false,
+  "require": {
+    "piwik": ">=2.16.1"
+  },
+  "authors": [
+    {
+      "name": "SBD",
+      "homepage": "NA"
+    }
+  ]
+}

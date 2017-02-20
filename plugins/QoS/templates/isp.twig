@@ -1,0 +1,9 @@
+<h2 piwik-enriched-headline data-graph-id="QoS.ispGraph">{{ 'QoS_listisp'|translate }}</h2>
+{% for isp in ispGraphs %}
+	<div class="categoryEntry" style="clear:both">
+		<h2>{{ isp.title }}</h2>
+
+		{{ isp.graph|raw }}
+
+	</div>
+{% endfor %}

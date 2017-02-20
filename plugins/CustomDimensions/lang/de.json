@@ -1,0 +1,7 @@
+{
+    "CustomDimensions": {
+        "NameAllowedCharacters": "Erlaubte Zeichen sich alle Buchstaben oder Zahlen sowie Leerzeichen, Gedankenstrich oder Unterstrich.",
+        "NameIsRequired": "Ein Name wird benötigt",
+        "ColumnUniqueActions": "Eindeutige Aktionen"
+    }
+}

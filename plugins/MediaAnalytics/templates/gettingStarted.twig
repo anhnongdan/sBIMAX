@@ -1,0 +1,29 @@
+<h2>{{ 'MediaAnalytics_GettingStarted'|translate }}</h2>
+
+<p style="width: 600px;">
+    <br />
+    <strong>{{ 'MediaAnalytics_NoMediaTrackedYet'|translate('"' ~ (siteName|raw) ~ '"')|raw }}.</strong>
+    <br /><br />
+    {{ 'MediaAnalytics_NoMediaTrackedYetDescription'|translate }} <br />
+    <a href="https://developer.piwik.org/guides/media-analytics/setup"
+       rel="noreferrer" target="_blank">{{ 'MediaAnalytics_NoMediaTrackedYetMoreInfo'|translate }}</a>.
+</p>
+<p style="width: 600px;">
+    {{ 'MediaAnalytics_NoMediaTrackedYetWillDisappear'|translate }}
+</p>
+
+{% if not piwikJsWritable %}
+    <br />
+    <div class="alert alert-warning">
+        {{ 'MediaAnalytics_PiwikJsNotWritable1'|translate }}
+
+        <br /><br />
+        <pre><code>chmod 0755 piwik.js</code></pre>
+
+        {{ 'MediaAnalytics_PiwikJsNotWritable2'|translate }}
+
+        <br /><br />
+        <pre><code>&lt;script type="text/javascript" src="{{ piwikUrl|default('') }}plugins/MediaAnalytics/tracker.js"&gt;&lt;/script&gt;</code></pre>
+
+    </div>
+{% endif %}

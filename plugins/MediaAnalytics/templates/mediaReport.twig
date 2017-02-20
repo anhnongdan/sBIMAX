@@ -1,0 +1,10 @@
+<h2 piwik-enriched-headline>{{ title }}</h2>
+{{ resourcesReport|raw }}
+
+<h2 piwik-enriched-headline>{{ titleHours|translate }}</h2>
+{{ hours|raw }}
+
+{% if resolutions is defined and resolutions %}
+    <h2 piwik-enriched-headline>{{ 'MediaAnalytics_Resolutions'|translate }}</h2>
+    {{ resolutions|raw }}
+{% endif %}
