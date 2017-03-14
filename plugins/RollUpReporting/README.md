@@ -8,7 +8,7 @@ At InnoCraft we run the Piwik project and community and we are responsible for m
 and some more. When you run several websites, mobile apps, or sub-domains like we do, you want to understand the overall 
 performance of your business while still being able to compare the performance of your individual websites and apps. Roll-Up Reporting is for you and will provide huge value.
  
-<img src="https://www.innocraft.com/innocraft/rollUpReporting.png" style="width:320px;float:right;margin-top:10px;margin-bottom:5px;" alt="Roll-Up Reporting">Roll-Up Reporting lets you aggregate data from multiple websites and apps into one single site. It lets you answer questions like 
+<img src="https://www.innocraft.com/innocraft/rollUpReporting.png" style="width:320px;float:right;margin-top:10px;margin-bottom:5px;" alt="Roll-Up Reporting">When you have Roll-Up Reporting, it lets you aggregate data from multiple websites and apps into one single site. It lets you answer questions like 
 "How many visits happened on all of my websites and apps?" and "Which campaigns contributed the most across several of my websites?" 
 or "How do my various Brands overall compare with each other?"
 When you have several shops (eg white-labels) it is very valuable to see how your ecommerce shops are performing overall. 

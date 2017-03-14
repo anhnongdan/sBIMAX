@@ -17,15 +17,16 @@ namespace Piwik\Plugins\MediaAnalytics;
 
 use Piwik\API\Request;
 use Piwik\Common;
+use Piwik\DataTable\Renderer\Json;
 use Piwik\FrontController;
 use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Piwik;
-use Piwik\Plugin\Report;
+use Piwik\Plugin\ReportsProvider;
 use Piwik\Plugins\CoreVisualizations\Visualizations\HtmlTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Bar;
 use Piwik\Plugins\MediaAnalytics\Dao\LogTable;
 use Piwik\Plugins\MediaAnalytics\Reports\Base;
-use Piwik\Plugins\MediaAnalytics\Widgets\Helper;
+use Piwik\Plugins\MediaAnalytics\Widgets\BaseWidget;
 use Piwik\SettingsPiwik;
 use Piwik\ViewDataTable;
 use Piwik\Translation\Translator;
@@ -33,58 +34,21 @@ use Piwik\Translation\Translator;
 class Controller extends \Piwik\Plugin\Controller
 {
     /**
-     * @var Widgets
-     */
-    private $widgets;
-
-    /**
      * @var Translator
      */
     private $translator;
-
-    /**
-     * @var Metrics
-     */
-    private $metrics;
 
     /**
      * @var LogTable
      */
     private $logTable;
 
-    public function __construct(Widgets $widgets, Translator $translator, Metrics $metrics, LogTable $logTable)
+    public function __construct(Translator $translator, LogTable $logTable)
     {
         parent::__construct();
 
-        $this->widgets = $widgets;
         $this->translator = $translator;
-        $this->metrics = $metrics;
         $this->logTable = $logTable;
-    }
-
-    public function video()
-    {
-        $this->checkSitePermission();
-
-        return $this->renderTemplate('mediaReport', array(
-            'title' => $this->translator->translate('MediaAnalytics_MenuVideo'),
-            'titleHours' => 'MediaAnalytics_VideoHours',
-            'resourcesReport' => $this->renderReport('getVideoTitles'),
-            'resolutions' => $this->renderReport('getVideoResolutions'),
-            'hours' => $this->renderReport('getVideoHours'),
-        ));
-    }
-
-    public function audio()
-    {
-        $this->checkSitePermission();
-
-        return $this->renderTemplate('mediaReport', array(
-            'title' => $this->translator->translate('MediaAnalytics_MenuAudio'),
-            'titleHours' => 'MediaAnalytics_AudioHours',
-            'resourcesReport' => $this->renderReport('getAudioTitles'),
-            'hours' => $this->renderReport('getAudioHours')
-        ));
     }
 
     public function detail()
@@ -95,7 +59,7 @@ class Controller extends \Piwik\Plugin\Controller
         $reportAction = Common::getRequestVar('reportAction', null, 'string');
 
         /** @var Base $report */
-        $report = Report::factory('MediaAnalytics', $reportAction);
+        $report = ReportsProvider::factory('MediaAnalytics', $reportAction);
 
         if (empty($report)) {
             throw new \Exception('This report does not exist');
@@ -116,21 +80,13 @@ class Controller extends \Piwik\Plugin\Controller
         ));
     }
 
-    public function audienceLogReport($fetch = false)
-    {
-        $this->checkSitePermission();
-
-        return $this->renderTemplate('mediaLog', array(
-            'mediaLog' => $this->getAudienceLog($fetch)
-        ));
-    }
-
     public function getAudienceLog($fetch = false)
     {
         $this->checkSitePermission();
+        // it is not a widget (yet) because we need to forward $fetch
 
         $saveGET = $_GET;
-        $_GET['segment'] = Helper::getMediaSegment();
+        $_GET['segment'] = BaseWidget::getMediaSegment();
         $_GET['widget'] = 1;
         $output = FrontController::getInstance()->dispatch('Live', 'getVisitorLog', array($fetch));
         $_GET   = $saveGET;
@@ -177,62 +133,36 @@ class Controller extends \Piwik\Plugin\Controller
         return $view->render();
     }
 
-    public function live()
+    public function hasRecords()
     {
-        $this->checkSitePermission();
-
-        return $this->renderTemplate('live', array(
-            'currentPlays' => $this->widgets->currentPlays(),
-            'currentTime' => $this->widgets->currentTime(),
-            'mostPlays30' => $this->widgets->mostPlays(30),
-            'mostPlays3600' => $this->widgets->mostPlays(3600),
-            'map' => $this->widgets->realTimeAudienceMap()
-        ));
+        return $this->sendHasRecords(false);
     }
 
-    public function audienceMap()
+    public function hasNoRecords()
     {
-        $this->checkSitePermission();
-
-        return $this->widgets->audienceMap();
+        return $this->sendHasRecords(true);
     }
 
-    public function overview()
+    private function sendHasRecords($invert)
     {
         $this->checkSitePermission();
 
-        if (!$this->logTable->hasRecords($this->idSite)) {
+        $idSite = Common::getRequestVar('idSite', null, 'int');
 
-            if (PluginManager::getInstance()->isPluginActivated('CustomPiwikJs')) {
-                $includeAutomatically = Request::processRequest('CustomPiwikJs.doesIncludePluginTrackersAutomatically');
-            } else {
-                $includeAutomatically = false;
-            }
+        Piwik::checkUserHasViewAccess($idSite);
 
-            return $this->renderTemplate('gettingStarted', array(
-                'siteName' => $this->site->getName(),
-                'piwikJsWritable' => $includeAutomatically
-            ));
+        Json::sendHeaderJSON();
+
+        $hasRecords = $this->logTable->hasRecords($this->idSite);
+
+        if ($invert) {
+            $hasRecords = !$hasRecords;
         }
 
-        $evolutionGraph = $this->getEvolutionGraph(array(), array(Metrics::METRIC_NB_PLAYS), 'getIndexGraph');
-
-        $sparklines = $this->widgets->sparklinesSummary();
-
-        return $this->renderTemplate('overview', array(
-            'evolutionSummary' => $evolutionGraph,
-            'sparklines' => $sparklines
-        ));
+        return json_encode($hasRecords);
     }
 
-    public function getIndexGraph()
-    {
-        $this->checkSitePermission();
-
-        return $this->getEvolutionGraph(array(), array(), __FUNCTION__);
-    }
-
-    public function getEvolutionGraph(array $columns = array(), array $defaultColumns = array(), $callingAction = __FUNCTION__)
+    public function getEvolutionGraph()
     {
         $this->checkSitePermission();
 
@@ -243,7 +173,7 @@ class Controller extends \Piwik\Plugin\Controller
             }
         }
 
-        $report = Report::factory('MediaAnalytics', 'get');
+        $report = ReportsProvider::factory('MediaAnalytics', 'get');
         $documentation = $report->getDocumentation();
 
         $selectableColumns = $report->getMetricsRequiredForReport(null, null);
@@ -262,7 +192,7 @@ class Controller extends \Piwik\Plugin\Controller
 
         // $callingAction may be specified to distinguish between
         // "VisitsSummary_WidgetLastVisits" and "VisitsSummary_WidgetOverviewGraph"
-        $view = $this->getLastUnitGraphAcrossPlugins($this->pluginName, $callingAction, $columns,
+        $view = $this->getLastUnitGraphAcrossPlugins($this->pluginName, __FUNCTION__, $columns,
             $selectableColumns, $documentation);
 
         if (empty($view->config->columns_to_display) && !empty($defaultColumns)) {

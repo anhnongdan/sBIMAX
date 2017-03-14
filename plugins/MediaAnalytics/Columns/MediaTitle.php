@@ -16,9 +16,32 @@ namespace Piwik\Plugins\MediaAnalytics\Columns;
 
 use Piwik\Columns\Dimension;
 use Piwik\Piwik;
+use Piwik\Plugins\MediaAnalytics\Dao\LogTable;
+use Piwik\Plugins\MediaAnalytics\Segment;
 
 class MediaTitle extends Dimension
 {
+    protected function configureSegments()
+    {
+        $segment = new Segment();
+        $segment->setSegment(Segment::NAME_MEDIA_TITLE);
+        $segment->setType(Segment::TYPE_DIMENSION);
+        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameMediaTitle'));
+        $segment->setSqlSegment('log_media.media_title');
+        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionMediaTitle'));
+        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
+            $logTable = LogTable::getInstance();
+            return $logTable->getMostUsedValuesForDimension('media_title', $idSite, $maxValuesToReturn);
+        });
+        $segment->setSqlFilterValue(function ($value) {
+            if ($value === 'Unknown' || $value === Piwik::translate('General_Unknown')) {
+                $value = '';
+            }
+
+            return $value;
+        });
+        $this->addSegment($segment);
+    }
 
     /**
      * The name of the dimension which will be visible for instance in the UI of a related report and in the mobile app.

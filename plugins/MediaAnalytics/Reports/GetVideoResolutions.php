@@ -19,7 +19,6 @@ use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\MediaAnalytics\Columns\Resolution;
 
-
 class GetVideoResolutions extends Base
 {
     protected function init()
@@ -35,9 +34,7 @@ class GetVideoResolutions extends Base
         // This defines in which order your report appears in the mobile app, in the menu and in the list of widgets
         $this->order = 9;
 
-        // If a widget title is specified, the report will be displayed in the list of widgets and the report can be
-        // exported as a widget
-        $this->widgetTitle  = 'MediaAnalytics_VideoResolutions';
+        $this->subcategoryId  = 'MediaAnalytics_TypeVideo';
     }
 
     public function configureView(ViewDataTable $view)

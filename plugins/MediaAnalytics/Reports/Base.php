@@ -15,6 +15,7 @@
 namespace Piwik\Plugins\MediaAnalytics\Reports;
 
 use Piwik\Common;
+
 use Piwik\Plugin\ProcessedMetric;
 use Piwik\Plugin\Report;
 use Piwik\Plugin\ViewDataTable;
@@ -29,13 +30,21 @@ use Piwik\Plugins\MediaAnalytics\Columns\Metrics\FinishRate;
 use Piwik\Plugins\MediaAnalytics\Columns\Metrics\FullscreenRate;
 use Piwik\Plugins\MediaAnalytics\Columns\Metrics\PlayRate;
 use Piwik\Plugins\MediaAnalytics\Metrics;
+use Piwik\Report\ReportWidgetFactory;
+use Piwik\Widget\WidgetsList;
 
 abstract class Base extends Report
 {
     protected function init()
     {
-        $this->category = 'MediaAnalytics_Media';
+        $this->categoryId = 'MediaAnalytics_Media';
         $this->defaultSortColumn = Metrics::METRIC_NB_PLAYS;
+    }
+    public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
+    {
+        if ($this->categoryId && $this->subcategoryId) {
+            $widgetsList->addWidgetConfig($factory->createWidget()->setIsWide());
+        }
     }
 
     protected function setDefaultMetrics()

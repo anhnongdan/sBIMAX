@@ -21,7 +21,6 @@ use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\CoreVisualizations\Visualizations\Graph;
 use Piwik\Plugins\MediaAnalytics\Columns\Hour;
 
-
 class GetVideoHours extends Base
 {
     protected function init()
@@ -38,9 +37,7 @@ class GetVideoHours extends Base
         $this->order = 7;
         $this->constantRowsCount = true;
 
-        // If a widget title is specified, the report will be displayed in the list of widgets and the report can be
-        // exported as a widget
-        $this->widgetTitle  = 'MediaAnalytics_VideoHours';
+        $this->subcategoryId  = 'MediaAnalytics_TypeVideo';
     }
 
     public function configureView(ViewDataTable $view)

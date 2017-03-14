@@ -109,10 +109,12 @@
 
                 if (applySegment) {
                    $segmentLink.click((function (applySegment) {
-                       return function () {
+                       return function (event) {
+                           event.stopPropagation();
+                           event.preventDefault();
                            Piwik_Popover.close();
                            var fullSegment = decodeURIComponent(applySegment) + ';media_spent_time%3E1';
-                           broadcast.propagateNewPage('popover=&segment='+encodeURIComponent(applySegment), undefined, 'module=VisitsSummary&action=index');
+                           broadcast.propagateNewPage('popover=&segment='+encodeURIComponent(applySegment), undefined, 'category=General_Visitors&subcategory=General_Overview');
                        }
                    })(applySegment));
                 } else {

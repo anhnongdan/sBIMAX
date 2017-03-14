@@ -19,30 +19,26 @@ use Piwik\Piwik;
 use Piwik\Plugins\MediaAnalytics\Dao\LogTable;
 use Piwik\Plugins\MediaAnalytics\Segment;
 
-class PlayerName extends Dimension
+class TimeToPlay extends Dimension
 {
 
     protected function configureSegments()
     {
         $segment = new Segment();
-        $segment->setSegment(Segment::NAME_MEDIA_PLAYER);
-        $segment->setType(Segment::TYPE_DIMENSION);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameMediaPlayer'));
-        $segment->setSqlSegment('log_media.player_name');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionMediaPlayer'));
+        $segment->setSegment(Segment::NAME_TIME_TO_PLAY);
+        $segment->setType(Segment::TYPE_METRIC);
+        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameTimeToInitialPlay'));
+        $segment->setSqlSegment('log_media.time_to_initial_play');
+        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionTimeToInitialPlay'));
         $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
             $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('player_name', $idSite, $maxValuesToReturn);
+            return $logTable->getMostUsedValuesForDimension('time_to_initial_play', $idSite, $maxValuesToReturn);
         });
         $this->addSegment($segment);
     }
 
-    /**
-     * The name of the dimension which will be visible for instance in the UI of a related report and in the mobile app.
-     * @return string
-     */
     public function getName()
     {
-        return Piwik::translate('MediaAnalytics_PlayerName');
+        return Piwik::translate('MediaAnalytics_SegmentNameTimeToInitialPlay');
     }
 }

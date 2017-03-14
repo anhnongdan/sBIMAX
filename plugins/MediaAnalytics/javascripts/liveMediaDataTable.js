@@ -43,8 +43,14 @@
 
             var self = this;
             this.refreshTimeout = setTimeout(function () {
-                self.reloadAjaxDataTable(false, function () {
-                    var $wrapper = $(self.$element).find('.dataTableWrapper');
+                self.reloadAjaxDataTable(false, function (response) {
+                    self.refreshTimeout = null;
+
+                    var scrollTo = piwikHelper.lazyScrollTo;
+                    piwikHelper.lazyScrollTo = function () {}; // make sure to prevent scrolling
+                    var content = self.dataTableLoaded(response, self.workingDivId, false);
+                    piwikHelper.lazyScrollTo = scrollTo;
+                    var $wrapper = content.find('.dataTableWrapper');
                     var $columns = $wrapper.find('td');
 
                     if ($columns.size()) {
@@ -52,8 +58,6 @@
                         // if there are columns, we prefer to update columns but there might be none when there is no data
                     }
                     $wrapper.effect('highlight', {}, 600);
-                    self.refreshTimeout = null;
-                    self.refreshTable();
                 });
             }, this.param.updateInterval);
         }

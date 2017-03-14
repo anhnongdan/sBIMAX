@@ -15,10 +15,12 @@
 
 namespace Piwik\Plugins\MediaAnalytics;
 
+use Piwik\Common;
 use Piwik\Piwik;
 use Piwik\Plugin;
 use Piwik\Plugins\MediaAnalytics\Dao\LogTable;
 use Exception;
+use Piwik\Widget\WidgetConfig;
 
 class MediaAnalytics extends Plugin
 {
@@ -28,12 +30,13 @@ class MediaAnalytics extends Plugin
     public function registerEvents()
     {
         return array(
-            'API.getSegmentDimensionMetadata' => 'addSegmentDimensionMetadata',
+            'Segment.addSegments' => 'addSegmentDimensionMetadata',
             'AssetManager.getStylesheetFiles' => 'getStylesheetFiles',
             'AssetManager.getJavaScriptFiles' => 'getJsFiles',
             'Metrics.getDefaultMetricTranslations' => 'getDefaultMetricTranslations',
             'Metrics.getDefaultMetricDocumentationTranslations' => 'getDefaultMetricDocumentationTranslations',
-            'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys'
+            'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys',
+            'Widget.addWidgetConfigs' => 'addWidgetConfigs'
         );
     }
     
@@ -58,6 +61,42 @@ class MediaAnalytics extends Plugin
 
         $configuration = new Configuration();
         $configuration->uninstall();
+    }
+
+    public function addWidgetConfigs(&$configs)
+    {
+        $idSite = Common::getRequestVar('idSite', false, 'int');
+
+        if (!empty($idSite)) {
+            $widgetsToAdd = array(
+                '60' => 'MediaAnalytics_WidgetTitleMostPlaysLast60',
+                '3600' => 'MediaAnalytics_WidgetTitleMostPlaysLast3600'
+            );
+            foreach ($widgetsToAdd as $lastMinutes => $name) {
+                $config = new WidgetConfig();
+                $config->setModule('MediaAnalytics');
+                $config->setAction('mostPlays');
+                $config->setName($name);
+                $config->setCategoryId('MediaAnalytics_Media');
+                $config->setParameters(array('lastMinutes' => $lastMinutes));
+                $config->setIsEnabled(Piwik::isUserHasViewAccess($idSite));
+                $config->setOrder(102);
+                if ('3600' == $lastMinutes || Common::getRequestVar('method', '', 'string') === 'API.getWidgetMetadata') {
+                    $config->setSubcategoryId('MediaAnalytics_TypeRealTime');
+                }
+                $configs[] = $config;
+            }
+
+            $config = new WidgetConfig();
+            $config->setModule('MediaAnalytics');
+            $config->setAction('getAudienceLog');
+            $config->setName('MediaAnalytics_MediaVisitorLogTitle');
+            $config->setCategoryId('MediaAnalytics_Media');
+            $config->setSubcategoryId('MediaAnalytics_TypeAudienceLog');
+            $config->setIsNotWidgetizable();
+            $config->setIsEnabled(Piwik::isUserHasViewAccess($idSite));
+            $configs[] = $config;
+        }
     }
 
     public function getStylesheetFiles(&$stylesheets)
@@ -109,7 +148,7 @@ class MediaAnalytics extends Plugin
         $translationKeys[] = 'SegmentEditor_CustomSegment';
     }
 
-    public function addSegmentDimensionMetadata(&$segments, $idSite)
+    public function addSegmentDimensionMetadata(&$segments)
     {
         $mediaTypeValues = array(self::MEDIA_TYPE_AUDIO => 'audio', self::MEDIA_TYPE_VIDEO => 'video');
         
@@ -135,7 +174,7 @@ class MediaAnalytics extends Plugin
         $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) use ($mediaTypeValues) {
             return array_values($mediaTypeValues);
         });
-        $segments[] = $segment->toArray();
+        $segments[] = $segment;
 
         $segment = new Segment();
         $segment->setSegment(Segment::NAME_MEDIA_PLAYS_TYPE);
@@ -160,80 +199,7 @@ class MediaAnalytics extends Plugin
         $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) use ($mediaTypeValues) {
             return array_values($mediaTypeValues);
         });
-        $segments[] = $segment->toArray();
-
-        // RESOUR
-        $segment = new Segment();
-        $segment->setSegment(Segment::NAME_RESOURCE);
-        $segment->setType(Segment::TYPE_DIMENSION);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameMediaResource'));
-        $segment->setSqlSegment('log_media.resource');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionMediaResource'));
-        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
-            $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('resource', $idSite, $maxValuesToReturn);
-        });
-        $segments[] = $segment->toArray();
-
-        $segment = new Segment();
-        $segment->setSegment(Segment::NAME_MEDIA_TITLE);
-        $segment->setType(Segment::TYPE_DIMENSION);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameMediaTitle'));
-        $segment->setSqlSegment('log_media.media_title');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionMediaTitle'));
-        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
-            $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('media_title', $idSite, $maxValuesToReturn);
-        });
-        $segments[] = $segment->toArray();
-
-        $segment = new Segment();
-        $segment->setSegment(Segment::NAME_SPENT_TIME);
-        $segment->setType(Segment::TYPE_METRIC);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameSpentTime'));
-        $segment->setSqlSegment('log_media.watched_time');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionSpentTime'));
-        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
-            $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('watched_time', $idSite, $maxValuesToReturn);
-        });
-        $segments[] = $segment->toArray();
-
-        $segment = new Segment();
-        $segment->setSegment(Segment::NAME_TIME_TO_PLAY);
-        $segment->setType(Segment::TYPE_METRIC);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameTimeToInitialPlay'));
-        $segment->setSqlSegment('log_media.time_to_initial_play');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionTimeToInitialPlay'));
-        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
-            $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('time_to_initial_play', $idSite, $maxValuesToReturn);
-        });
-        $segments[] = $segment->toArray();
-
-        $segment = new Segment();
-        $segment->setSegment(Segment::NAME_MEDIA_LENGTH);
-        $segment->setType(Segment::TYPE_METRIC);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameMediaLength'));
-        $segment->setSqlSegment('log_media.media_length');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionMediaLength'));
-        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
-            $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('media_length', $idSite, $maxValuesToReturn);
-        });
-        $segments[] = $segment->toArray();
-
-        $segment = new Segment();
-        $segment->setSegment(Segment::NAME_MEDIA_PLAYER);
-        $segment->setType(Segment::TYPE_DIMENSION);
-        $segment->setName(Piwik::translate('MediaAnalytics_SegmentNameMediaPlayer'));
-        $segment->setSqlSegment('log_media.player_name');
-        $segment->setAcceptedValues(Piwik::translate('MediaAnalytics_SegmentDescriptionMediaPlayer'));
-        $segment->setSuggestedValuesCallback(function ($idSite, $maxValuesToReturn) {
-            $logTable = LogTable::getInstance();
-            return $logTable->getMostUsedValuesForDimension('player_name', $idSite, $maxValuesToReturn);
-        });
-        $segments[] = $segment->toArray();
+        $segments[] = $segment;
     }
 
 }

@@ -17,8 +17,8 @@ namespace Piwik\Plugins\MediaAnalytics\Reports;
 
 use Piwik\Piwik;
 
+use Piwik\Plugin\ReportsProvider;
 use Piwik\Plugin\ViewDataTable;
-
 use Piwik\Plugins\MediaAnalytics\Columns\GroupedResource;
 
 
@@ -36,7 +36,7 @@ class GetGroupedVideoResources extends Base
         // This defines in which order your report appears in the mobile app, in the menu and in the list of widgets
         $this->order = 5;
 
-        $this->widgetTitle = 'MediaAnalytics_GroupedVideoResources';
+        $this->subcategoryId  = 'MediaAnalytics_TypeVideo';
     }
 
     public function configureView(ViewDataTable $view)
@@ -49,8 +49,8 @@ class GetGroupedVideoResources extends Base
     public function getRelatedReports()
     {
         return array(
-            self::factory('MediaAnalytics', 'GetVideoResources'),
-            self::factory('MediaAnalytics', 'GetVideoTitles'),
+            ReportsProvider::factory('MediaAnalytics', 'GetVideoResources'),
+            ReportsProvider::factory('MediaAnalytics', 'GetVideoTitles'),
         );
     }
 

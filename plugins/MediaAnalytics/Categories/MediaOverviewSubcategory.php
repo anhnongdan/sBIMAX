@@ -12,22 +12,14 @@
  * @link https://www.innocraft.com/
  * @license For license details see https://www.innocraft.com/license
  */
+namespace Piwik\Plugins\MediaAnalytics\Categories;
 
-namespace Piwik\Plugins\MediaAnalytics\Reports;
+use Piwik\Category\Subcategory;
 
-use Piwik\Piwik;
-
-
-class GetAudioHours extends GetVideoHours
+class MediaOverviewSubcategory extends Subcategory
 {
-    protected function init()
-    {
-        parent::init();
-
-        $this->name = Piwik::translate('MediaAnalytics_AudioHours');
-        $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationAudioHours');
-        $this->order = 8;
-        $this->subcategoryId  = 'MediaAnalytics_TypeAudio';
-    }
+    protected $categoryId = 'MediaAnalytics_Media';
+    protected $id = 'General_Overview';
+    protected $order = 2;
 
 }

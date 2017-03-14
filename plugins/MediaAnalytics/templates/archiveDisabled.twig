@@ -1,4 +1,4 @@
-<div class="mediaNoBrowserSegmentation alert alert-warning" style="margin-top: 24px;">
+<div class="mediaNoBrowserSegmentation system notification notification-warning" style="margin-top: 24px;">
     <strong>{{ 'MediaAnalytics_SegmentBrowserArchivingIsDisabledTitle'|translate }}</strong><br />
 
     {{ 'MediaAnalytics_SegmentBrowserArchivingIsDisabledWaysToFix'|translate }}
@@ -17,6 +17,7 @@ Segments[]="media_spent_time>0"</code></pre>
             <li>{{ 'MediaAnalytics_SegmentBrowserArchivingIsDisabledWay3'|translate('MediaAnalytics_NameOfActualSegmentHasPlayedMedia'|translate) }}
                 <br />
                 <input id="addSegmentPlay" type="button" class="btn" value="{{ 'MediaAnalytics_SegmentBrowserArchivingIsDisabledAdd'|translate('MediaAnalytics_NameOfActualSegmentHasPlayedMedia'|translate) }}">
+
                 <script type="text/javascript">
                     $('#addSegmentPlay').click(function () {
                         var ajax = new ajaxHelper();
@@ -32,7 +33,6 @@ Segments[]="media_spent_time>0"</code></pre>
         {% else %}
             <li>{{ 'MediaAnalytics_SegmentBrowserArchivingIsDisabledWay4'|translate }}</li>
         {% endif %}
-
 
     </ul>
 </div>

@@ -16,7 +16,7 @@
 namespace Piwik\Plugins\MediaAnalytics\Reports;
 
 use Piwik\Piwik;
-
+use Piwik\Plugin\ReportsProvider;
 
 class GetAudioResources extends GetVideoResources
 {
@@ -25,16 +25,16 @@ class GetAudioResources extends GetVideoResources
         parent::init();
 
         $this->name = Piwik::translate('MediaAnalytics_AudioResources');
-        $this->widgetTitle = 'MediaAnalytics_AudioResources';
         $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationAudioResources');
         $this->order = 4;
+        $this->subcategoryId  = 'MediaAnalytics_TypeAudio';
     }
 
     public function getRelatedReports()
     {
         return array(
-            self::factory('MediaAnalytics', 'GetGroupedAudioResources'),
-            self::factory('MediaAnalytics', 'GetAudioTitles'),
+            ReportsProvider::factory('MediaAnalytics', 'GetGroupedAudioResources'),
+            ReportsProvider::factory('MediaAnalytics', 'GetAudioTitles'),
         );
     }
 }

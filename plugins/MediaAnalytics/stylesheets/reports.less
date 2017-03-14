@@ -10,11 +10,16 @@
     }
 }
 
+.mediaLiveDimension {
+    font-size: 16px;
+}
+
 .mediaNoBrowserSegmentation {
     ul {
         margin-top: 24px;
         list-style-type: disc;
         li {
+            list-style-type: disc;
             margin-bottom: 16px;
 
             pre {
@@ -28,9 +33,6 @@
     margin-top: 16px;
 }
 
-.mediaLiveDimension {
-    font-size: 16px;
-}
 
 .mediaLiveReport {
     .mediaLiveMetrics {
@@ -67,6 +69,11 @@
 }
 
 .mediaDetailPage {
+    .dataTableVizHtmlTable th {
+        background: @theme-color-background-tinyContrast !important;
+        cursor: initial !important;
+    }
+
     .segmentLinkInfo {
         .font-default();
         margin-bottom: 20px;

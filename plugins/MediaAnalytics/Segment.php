@@ -14,6 +14,7 @@
  */
 namespace Piwik\Plugins\MediaAnalytics;
 use Piwik\Common;
+use Piwik\Piwik;
 use Piwik\Segment\SegmentExpression;
 
 /**

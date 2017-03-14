@@ -77,9 +77,10 @@
             content.trigger('piwik:dataTableLoaded');
 
             piwikHelper.lazyScrollTo(content[0], 400);
+            piwikHelper.compileAngularComponents(content);
 
             return content;
-        },
+        }
     });
 
 })(jQuery, require);

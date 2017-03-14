@@ -10,7 +10,7 @@
         "AfterEntry": "after entering here",
         "All": "All",
         "AllowPiwikArchivingToTriggerBrowser": "Archive reports when viewed from the browser",
-        "AllWebsitesDashboard": "All CDNs dashboard",
+        "AllWebsitesDashboard": "All Websites dashboard",
         "And": "and",
         "API": "API",
         "Apply": "Apply",
@@ -238,7 +238,7 @@
         "More": "More",
         "MoreDetails": "More Details",
         "MoreLowerCase": "more",
-        "MultiSitesSummary": "All CDNs",
+        "MultiSitesSummary": "All Websites",
         "Name": "Name",
         "NbActions": "Number of Actions",
         "NbInteractions": "Number of Interactions",
@@ -290,7 +290,7 @@
         "OverlayRowActionTooltip": "See analytics data directly on your website (opens new tab)",
         "OverlayRowActionTooltipTitle": "Open Page Overlay",
         "Overview": "Overview",
-        "Pages": "URLs",
+        "Pages": "Pages",
         "Pagination": "%1$s - %2$s of %3$s",
         "PaginationWithoutTotal": "%1$s - %2$s",
         "ParameterMustIntegerBetween": "Parameter %1$s must be an integer value between %2$s and %3$s.",
@@ -436,7 +436,7 @@
         "YouMustBeLoggedIn": "You must be logged in to access this functionality.",
         "YourChangesHaveBeenSaved": "Your changes have been saved.",
 
-	"cBimaxHint": "BiMAX - CDN Analyzer"
+	"cBimaxHint": "BiMAX - Stream Analyzer"
     },
     "Mobile": {
         "AboutPiwikMobile": "About Piwik Mobile",

@@ -2,10 +2,6 @@
 	path = BimaxCore
 	url = https://github.com/anhnongdan/BimaxCore.git
 	branch = core_dev
-[submodule "plugins/QA"]
-	path = plugins/QA
-	url = https://github.com/vutranvn/QA.git
-	branch = ver-3.x
 [submodule "plugins/SecurityInfo"]
     path = plugins/SecurityInfo
     url = https://github.com/piwik/plugin-SecurityInfo.git
@@ -52,3 +48,7 @@
 # Note: when you add a submodule that SHOULD be left in the packaged release such as the few submodules below,
 #       then you MUST add these submodules names in the SUBMODULES_PACKAGED_WITH_CORE variable in:
 #       https://github.com/piwik/piwik-package/blob/master/scripts/build-package.sh
+[submodule "plugins/QualityAssurance"]
+	path = plugins/QualityAssurance
+	url = https://github.com/vutranvn/QualityAssurance.git
+	branch = ver-3.x

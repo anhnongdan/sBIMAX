@@ -32,8 +32,7 @@ class GetPlayers extends Base
 
         $this->order = 36;
 
-        $this->widgetTitle = 'MediaAnalytics_MediaPlayers';
-        $this->menuTitle = 'MediaAnalytics_MediaPlayers';
+        $this->subcategoryId = 'MediaAnalytics_MediaPlayers';
     }
 
     public function configureView(ViewDataTable $view)
@@ -46,7 +45,7 @@ class GetPlayers extends Base
         $view->config->show_limit_control = false;
         $view->config->show_search = false;
         $view->config->show_exclude_low_population = false;
-        $view->config->show_footer_message = Piwik::translate('MediaAnalytics_MediaPlayersFooterMessage', array('<a rel="noreferrer" target="_blank" href="https://developer.piwik.org/guides/media-analytics/custom-player">', '</a>'));
+        $view->config->show_footer_message = Piwik::translate('MediaAnalytics_MediaPlayersFooterMessage', array('<a rel="noreferrer" target="_blank" href="http://developer.piwik.org/guides/media-analytics/custom-player">', '</a>'));
     }
 
 }

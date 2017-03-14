@@ -366,24 +366,26 @@ class RollUpReporting extends Plugin
     {
         $idSite = $visitor->getColumn('idSite');
 
-        $out  = $this->addSiteVisitorLogInfo($out, $idSite);
-        $out .= '<br />';
+        $out  = $this->addSiteVisitorLogInfo($out, $idSite, true);
     }
 
     public function renderVisitorLogWidgetViewBeforeVisitInfo(&$out, $visitor)
     {
         $idSite = $visitor['idSite'];
 
-        $out = $this->addSiteVisitorLogInfo($out, $idSite);
+        $out = $this->addSiteVisitorLogInfo($out, $idSite, false);
     }
 
-    private function addSiteVisitorLogInfo($out, $idSite)
+    private function addSiteVisitorLogInfo($out, $idSite, $addNewLine)
     {
         $parentSite = $this->getIdSite();
 
         if (!empty($idSite) && $this->isRollUpIdSite($parentSite)) {
             $siteName = Site::getNameFor($idSite);
             $out .= sprintf('<div>%1$s "%2$s" (ID %3$s)</div>', Piwik::translate('General_Website'), $siteName, (int)$idSite);
+            if ($addNewLine) {
+                $out .= '<br />';
+            }
         }
 
         return $out;

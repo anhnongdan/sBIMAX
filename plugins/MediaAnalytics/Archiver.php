@@ -113,11 +113,8 @@ class Archiver extends \Piwik\Plugin\Archiver
         $where = ' AND char_length(log_media.resolution) > 5 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
         $this->makeRegularReport(array(self::RECORD_VIDEO_RESOLUTIONS => new DataArray()), $where, $groupBy);
 
-
-	//[Thangnt 2017-01-19] Fix archiving problems with MediaAnalytics
-
         // RECORD HOURS
-        $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString("Y-m-d");
+        $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString();
         $timezone = $this->getParams()->getSite()->getTimezone();
 
         $dataArray = new HoursDataArray($date, $timezone);
@@ -482,7 +479,7 @@ class Archiver extends \Piwik\Plugin\Archiver
     {
         $from = array('log_media');
 
-        $condition = 'log_media.server_time >= ? AND log_media.server_time <= ? AND log_media.idsite = ? ';
+        $condition = $this->logAggregator->getWhereStatement('log_media', 'server_time');
         if (!empty($where)) {
             $condition .= ' ' . $where . ' ';
         }
@@ -491,12 +488,5 @@ class Archiver extends \Piwik\Plugin\Archiver
         $query = $this->logAggregator->generateQuery($select, $from, $condition, $groupBy, $orderBy);
 
         return Db::query($query['sql'], $query['bind']);
-    }
-
-    protected function getIdSite()
-    {
-        $idSites = $this->getProcessor()->getParams()->getIdSites();
-
-        return reset($idSites);
     }
 }

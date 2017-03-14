@@ -16,6 +16,7 @@
 namespace Piwik\Plugins\MediaAnalytics\Reports;
 
 use Piwik\Piwik;
+use Piwik\Plugin\ReportsProvider;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\MediaAnalytics\Columns\MediaResource;
 
@@ -32,7 +33,7 @@ class GetVideoResources extends Base
         $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationVideoResources');
 
         $this->order = 3;
-        $this->widgetTitle = 'MediaAnalytics_VideoResources';
+        $this->subcategoryId  = 'MediaAnalytics_TypeVideo';
     }
 
     public function configureView(ViewDataTable $view)
@@ -45,8 +46,8 @@ class GetVideoResources extends Base
     public function getRelatedReports()
     {
         return array(
-            self::factory('MediaAnalytics', 'GetGroupedVideoResources'),
-            self::factory('MediaAnalytics', 'GetVideoTitles'),
+            ReportsProvider::factory('MediaAnalytics', 'GetGroupedVideoResources'),
+            ReportsProvider::factory('MediaAnalytics', 'GetVideoTitles'),
         );
     }
 }

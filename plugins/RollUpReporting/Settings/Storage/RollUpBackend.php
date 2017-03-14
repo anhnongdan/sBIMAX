@@ -87,9 +87,13 @@ class RollUpBackend implements BackendInterface
         if (!empty($values[$this->fieldName]) && is_array($values[$this->fieldName])) {
             $sourceIdSites = array_unique($values[$this->fieldName]);
 
-            $isAllWebsites = false;
+            $hadAllWebsitesAlreadyBefore = false;
             if (in_array(Model::KEY_ALL_WEBSITES, $sourceIdSites)) {
-                $isAllWebsites = true;
+                // roll up is configured for all websites, and had already all sites before, then we do not want to
+                // invalidate any reports. But we do want to invalidate if it did not have all websites before and is
+                // now assigned to all websites
+                $hadAllWebsitesAlreadyBefore = self::hasAssignedAllSites($this->idSite);
+
                 self::setAssignAllSites($this->idSite);
                 $sourceIdSites = $this->siteModel->getSitesId();
                 $parentIdSites = $this->model->getParentIdSites();
@@ -107,9 +111,10 @@ class RollUpBackend implements BackendInterface
             sort($beforeUpdate);
             sort($sourceIdSites);
 
-            if ($beforeUpdate != $sourceIdSites && !$isAllWebsites) {
+            if ($beforeUpdate != $sourceIdSites && !$hadAllWebsitesAlreadyBefore) {
                 // we cannot invalidate for all websites since we would invalidate each time a new site is created
-                // and it would be not needed to invalidate in this case
+                // and it would be not needed to invalidate in this case. However, we want to invalidate if the user
+                // changes from few sites to all websites for the first time
                 $sync = StaticContainer::get('Piwik\Plugins\RollUpReporting\RollUp\Sync');
                 $sync->invalidateReportsSinceCreation($this->idSite);
             }

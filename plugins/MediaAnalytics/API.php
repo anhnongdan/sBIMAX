@@ -14,14 +14,14 @@
  */
 namespace Piwik\Plugins\MediaAnalytics;
 
-use Piwik\API\Request;
 use Piwik\Archive;
 use Piwik\DataTable;
+use Piwik\API\Request;
 use Piwik\Date;
 use Piwik\Piwik;
-use Piwik\Plugin\Report;
+use Piwik\Plugin\ReportsProvider;
 use Piwik\Plugins\MediaAnalytics\Dao\LogTable;
-use Piwik\Plugins\MediaAnalytics\Widgets\Helper;
+use Piwik\Plugins\MediaAnalytics\Widgets\BaseWidget;
 use Piwik\SettingsPiwik;
 use Piwik\Site;
 
@@ -70,7 +70,7 @@ class API extends \Piwik\Plugin\API
 
         $requestedColumns = Piwik::getArrayFromApiParameter($columns);
 
-        $report = Report::factory('MediaAnalytics', 'get');
+        $report = ReportsProvider::factory('MediaAnalytics', 'get');
         $columns = $report->getMetricsRequiredForReport(null, $requestedColumns);
 
         if (!SettingsPiwik::isUniqueVisitorsEnabled($period) || !Archiver::isUniqueVisitorsEnabled($period)) {
@@ -389,15 +389,13 @@ class API extends \Piwik\Plugin\API
     public function addMediaPlaySegment($idSite)
     {
         Piwik::checkUserHasViewAccess($idSite);
-
         $segmentId = Request::processRequest('SegmentEditor.add', array(
             'name' => Piwik::translate('MediaAnalytics_NameOfActualSegmentHasPlayedMedia'),
-            'definition' => urldecode(Helper::getMediaSegment()),
+            'definition' => urldecode(BaseWidget::getMediaSegment()),
             'idSite' => $idSite,
             'autoArchive' => true,
             'enabledAllUsers' => false
         ));
-
         return $segmentId;
     }
 
@@ -417,11 +415,13 @@ class API extends \Piwik\Plugin\API
         if ($idSubtable === false) {
             $idSubtable = null;
         }
+
         if ($expandedDepth === false) {
             $expandedDepth = null;
         }
 
-        $table = Archive::getDataTableFromArchive($recordName, $idSite, $period, $date, $segment, (bool) $expandedDepth, $idSubtable, $expandedDepth);
+        $table = Archive::createDataTableFromArchive($recordName, $idSite, $period, $date, $segment, (bool) $expandedDepth, $flat = false, $idSubtable, $expandedDepth);
+        $table->disableFilter('ReplaceColumnNames');
 
         if ($secondaryDimension) {
             $actualIdSubtable = $this->getActualIdSubtableFromSecondaryDimension($table, $secondaryDimension);
@@ -435,7 +435,8 @@ class API extends \Piwik\Plugin\API
             DataTable\Manager::getInstance()->deleteTable($table->getId());
             $table = null;
 
-            $table = Archive::getDataTableFromArchive($recordName, $idSite, $period, $date, $segment, $expanded = false, $actualIdSubtable);
+            $table = Archive::createDataTableFromArchive($recordName, $idSite, $period, $date, $segment, $expanded = false, $flat = false, $actualIdSubtable);
+            $table->disableFilter('ReplaceColumnNames');
 
             switch ($secondaryDimension) {
                 case Archiver::SECONDARY_DIMENSION_MEDIA_PROGRESS:
