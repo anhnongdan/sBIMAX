@@ -110,8 +110,7 @@ class Redis implements Backend
         }
 
         $this->connectIfNeeded();
-        //$values = $this->redis->lRange($key, 0, $numValues - 1);
-        $values = $this->redis->lRange($key, -1, 0 - $numValues);
+        $values = $this->redis->lRange($key, 0, $numValues - 1);
 
         return $values;
     }

@@ -59,13 +59,15 @@
         _initStandaloneMap: function () {
             $('#periodString').hide();
             initTopControls();
-            $('#secondNavBar').on('piwikSwitchPage', function (event, item) {
-                var href = $(item).attr('href');
+
+            var $rootScope = piwikHelper.getAngularDependency('$rootScope');
+            $rootScope.$on('piwikPageChange', function () {
+                var href = location.href;
                 var clickedMenuIsNotMap = !href || (href.indexOf('module=UserCountryMap&action=realtimeWorldMap') == -1);
                 if (clickedMenuIsNotMap) {
                     $('#periodString').show();
                     initTopControls();
-                }
+                };
             });
             $('.realTimeMap_overlay').css('top', '0px');
             $('.realTimeMap_datetime').css('top', '20px');
@@ -213,14 +215,14 @@
             function visitTooltip(r) {
                 var ds = new Date().getTime() / 1000 - r.lastActionTimestamp,
                     ad = r.actionDetails,
-                    ico = function (src) { return '<img src="' + src + '" alt="" class="icon" />&nbsp;'; };
+                    ico = function (src, square) { return '<img' + (square ? ' width="16px" height="16px"' : '') + ' src="' + src + '" alt="" class="icon" />&nbsp;'; };
                 return '<h3>' + (r.city ? r.city + ' / ' : '') + r.country + '</h3>' +
                     // icons
-                    ico(r.countryFlag) + ico(r.browserIcon) + ico(r.operatingSystemIcon) + '<br/>' +
+                    ico(r.countryFlag) + ico(r.browserIcon, true) + ico(r.operatingSystemIcon, true) + '<br/>' +
                     // User ID
                     (r.userId ? _pk_translate('General_UserId') + ':&nbsp;' + r.userId + '<br/>' : '') +
                     // last action
-                    (ad && ad.length && ad[ad.length - 1].pageTitle ? '<em>' + ad[ad.length - 1].pageTitle + '</em><br/>' : '') +
+                    (ad && ad.length && ad[ad.length - 1].pageTitle ? '' + ad[ad.length - 1].pageTitle + '<br/>' : '') +
                     // time of visit
                     '<div class="rel-time" data-actiontime="' + r.lastActionTimestamp + '">' + relativeTime(ds) + '</div>' +
                     // either from or direct
@@ -632,8 +634,8 @@
                 map.symbolGroups[0].update();
             }
 
-            if (w < 355) $('.tableIcon span').hide();
-            else $('.tableIcon span').show();
+            if (w < 355) $('.UserCountryMap .tableIcon span').hide();
+            else $('.UserCountryMap .tableIcon span').show();
         },
 
         _destroy: function () {

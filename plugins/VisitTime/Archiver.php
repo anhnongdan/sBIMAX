@@ -70,7 +70,7 @@ class Archiver extends \Piwik\Plugin\Archiver
 
     protected function convertTimeToLocalTimezone(DataArray &$array)
     {
-        $date = Date::factory($this->getProcessor()->getParams()->getDateStart()->getDateStartUTC())->toString();
+        $date = Date::factory($this->getProcessor()->getParams()->getDateStart()->getDateStartUTC())->toString("Y-m-d");
         $timezone = $this->getProcessor()->getParams()->getSite()->getTimezone();
         
         /**
@@ -81,9 +81,9 @@ class Archiver extends \Piwik\Plugin\Archiver
          * This date is just used to append to hour to convert time by standard functions
          * of Date class, the date doesn't affect the result. 
          */
-        if(strlen($date) > 10){
-            $date = substr($date, 0,10);
-        }
+        //if(strlen($date) > 10){
+        //    $date = substr($date, 0,10);
+        //}
         
         Log::debug("VisitTime converts server time to local timezone: date= $date .");
             

@@ -12,18 +12,35 @@ use Piwik\Common;
 use Piwik\DataTable;
 use Piwik\FrontController;
 use Piwik\Metrics\Formatter;
-use Piwik\Period\Range;
-use Piwik\Piwik;
-use Piwik\Plugin;
 use Piwik\Plugin\ViewDataTable;
-use Piwik\Url;
 use Piwik\Plugins\Bandwidth\Columns\Bandwidth as BandwidthColumn;
+use Piwik\Plugins\CoreVisualizations\Visualizations\Sparklines;
 
 class Bandwidth extends \Piwik\Plugin
 {
     // module => action. The ones that are defined here will be enriched by bandwidth columns when displayed in the UI
     private $reportsToEnrich = array(
-        'Actions' => array('getPageUrls', 'getPageTitles', 'getDownloads'),
+        'Actions' => array(
+            'getPageUrls',
+            'getPageUrl',
+            'getPageTitles',
+            'getPageTitle',
+            'getDownloads',
+            'getDownload',
+            'getOutlink',
+            'getOutlinks',
+            'getEntryPageTitles',
+            'getEntryPageUrls',
+            'getExitPageTitles',
+            'getExitPageUrls',
+            'getSiteSearchKeywords',
+            'getSiteSearchNoResultKeywords',
+            'getPageTitlesFollowingSiteSearch',
+            'getPageUrlsFollowingSiteSearch'
+        ),
+        'CustomDimensions' => array(
+            'getCustomDimension'
+        )
     );
 
     // we will only show columns in that report in the UI if there was at least one byte tracked for the defined metric
@@ -35,15 +52,14 @@ class Bandwidth extends \Piwik\Plugin
     );
 
     /**
-     * @see Piwik\Plugin::getListHooksRegistered
+     * @see \Piwik\Plugin::registerEvents
      */
-    public function getListHooksRegistered()
+    public function registerEvents()
     {
         $hooks = array(
             'ViewDataTable.configure' => 'configureViewDataTable',
             'Actions.Archiving.addActionMetrics' => 'addActionMetrics',
-            'Metrics.getDefaultMetricTranslations' => 'addMetricTranslations',
-            'Template.VisitsSummaryOverviewSparklines' => 'renderSparklines'
+            'Metrics.getDefaultMetricTranslations' => 'addMetricTranslations'
         );
 
         foreach ($this->reportsToEnrich as $module => $actions) {
@@ -87,6 +103,23 @@ class Bandwidth extends \Piwik\Plugin
             $view->config->addTranslations(Metrics::getMetricTranslations());
         }
 
+        if ($module === 'API' && $method === 'get' && $view->isViewDataTableId(Sparklines::ID)) {
+            /** @var Sparklines $view */
+            $view->config->addSparklineMetric(Metrics::COLUMN_TOTAL_OVERALL_BANDWIDTH);
+            $view->config->filters[] = function (DataTable $table) use ($view) {
+                $firstRow = $table->getFirstRow();
+                $nbTotalBandwidth = $firstRow->getColumn(Metrics::COLUMN_TOTAL_OVERALL_BANDWIDTH);
+
+                if (is_numeric($nbTotalBandwidth)) {
+                    $formatter = new Formatter();
+                    $nbTotalBandwidth = $formatter->getPrettySizeFromBytes((int) $nbTotalBandwidth, null, 2);
+                    $firstRow->setColumn(Metrics::COLUMN_TOTAL_OVERALL_BANDWIDTH, $nbTotalBandwidth);
+                }
+                
+                return $nbTotalBandwidth;
+            };
+        }
+
         if (array_key_exists($module, $this->reportsToEnrich) && in_array($method, $this->reportsToEnrich[$module])) {
 
             $idSite = Common::getRequestVar('idSite');
@@ -124,9 +157,21 @@ class Bandwidth extends \Piwik\Plugin
             foreach (Metrics::getBandwidthMetrics() as $metric) {
                 $extraProcessedMetrics[] = $metric;
             }
-
             $dataTable->setMetadata(DataTable::EXTRA_PROCESSED_METRICS_METADATA_NAME, $extraProcessedMetrics);
         });
+
+        $dataTable->filter(function (DataTable $dataTable) {
+            $metricIdsToName = array();
+            foreach (Metrics::getBandwidthMetrics() as $metric) {
+                $metricId = $metric->getMetricId();
+                if(!empty($metricId)) {
+                    $metricIdsToName[$metricId] = $metric->getName();
+                }
+            }
+            $dataTable->queueFilter('ReplaceColumnNames', array($metricIdsToName));
+
+        });
+
     }
 
 }

@@ -1,0 +1,27 @@
+{
+    "name": "RollUpReporting",
+    "description": "Aggregate data from multiple websites, mobile apps and shops into a Roll-Up site to gain new insights and save time.",
+    "version": "3.0.2",
+    "theme": false,
+    "require": {
+        "piwik": ">=3.0.0-rc2,<4.0.0-b1"
+    },
+    "authors": [
+        {
+            "name": "InnoCraft",
+            "email": "contact@innocraft.com",
+            "homepage": "https:\/\/www.innocraft.com"
+        }
+    ],
+    "price": {
+        "base": 85
+    },
+    "archive": {
+        "exclude": [
+            "\/CHANGELOG.md"
+        ]
+    },
+    "homepage": "https:\/\/plugins.piwik.org\/RollUpReporting",
+    "license": "InnoCraft EULA",
+    "keywords": ["roll-up", "roll", "up", "group", "aggregate", "websites", "sites", "property", "meta", "parent"]
+}

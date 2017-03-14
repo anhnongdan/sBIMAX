@@ -33,11 +33,10 @@ class ServerFilesGenerator
         $denyAll = self::getDenyAllHtaccessContent();
         $allow = self::getAllowHtaccessContent();
 
-        // more selective allow/deny filters
         $allowAny =
             "# Allow any file in this directory\n" .
             "<Files \"*\">\n" .
-                $allow . "\n" .
+            "\t" . $allow . "\n" .
             "</Files>\n";
 
         $allowStaticAssets =
@@ -48,8 +47,8 @@ class ServerFilesGenerator
             "</IfModule>\n\n" .
 
             "# Allow to serve static files which are safe\n" .
-            "<Files ~ \"\\.(gif|ico|jpg|png|svg|js|css|htm|html|swf|mp3|mp4|wav|ogg|avi|ttf|eot)$\">\n" .
-                 $allow . "\n" .
+            "<Files ~ \"\\.(gif|ico|jpg|png|svg|js|css|htm|html|swf|mp3|mp4|wav|ogg|avi|ttf|eot|woff|woff2|json)$\">\n" .
+            $allow . "\n" .
             "</Files>\n";
 
         $directoriesToProtect = array(
@@ -141,6 +140,8 @@ class ServerFilesGenerator
     <staticContent>
       <remove fileExtension=".svg" />
       <mimeMap fileExtension=".svg" mimeType="image/svg+xml" />
+      <remove fileExtension=".woff" />
+      <mimeMap fileExtension=".woff" mimeType="application/font-woff" />
     </staticContent>
   </system.webServer>
 </configuration>');

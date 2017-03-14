@@ -113,8 +113,11 @@ class Archiver extends \Piwik\Plugin\Archiver
         $where = ' AND char_length(log_media.resolution) > 5 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
         $this->makeRegularReport(array(self::RECORD_VIDEO_RESOLUTIONS => new DataArray()), $where, $groupBy);
 
+
+	//[Thangnt 2017-01-19] Fix archiving problems with MediaAnalytics
+
         // RECORD HOURS
-        $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString();
+        $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString("Y-m-d");
         $timezone = $this->getParams()->getSite()->getTimezone();
 
         $dataArray = new HoursDataArray($date, $timezone);

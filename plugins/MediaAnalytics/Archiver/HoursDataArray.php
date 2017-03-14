@@ -60,6 +60,7 @@ class HoursDataArray extends DataArray
     {
         if (!isset($this->labelCache[$label])) {
             $datetime = $this->startDate . ' ' . $label . ':00:00';
+	    \Piwik\Log::debug("In HourDataArray of Archiver: datetime: %s", $datetime);
             $this->labelCache[$label] = (int) Date::factory($datetime, $this->timezone)->toString('H');
         }
 

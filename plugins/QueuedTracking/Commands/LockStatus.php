@@ -49,6 +49,7 @@ class LockStatus extends ConsoleCommand
             $output->writeln(sprintf('<error>%s is not or no longer locked</error>', $keyToUnlock));
             $output->writeln(' ');
         }
+
         foreach ($keys as $lockKey) {
             $time = $backend->getTimeToLive($lockKey);
             if (!empty($time)) {

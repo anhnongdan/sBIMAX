@@ -164,7 +164,7 @@ class Controller extends \Piwik\Plugin\Controller
         $token_auth = Piwik::getCurrentUserTokenAuth();
         $view = new View('@UserCountryMap/realtimeMap');
 
-        $view->mapIsStandaloneNotWidget = $standalone;
+        $view->mapIsStandaloneNotWidget = !(bool) Common::getRequestVar('widget', $standalone, 'int');
 
         $view->metrics = $this->getMetrics($idSite, 'range', self::REAL_TIME_WINDOW, $token_auth);
         $view->defaultMetric = 'nb_visits';
@@ -189,7 +189,7 @@ class Controller extends \Piwik\Plugin\Controller
             'hours'            => $this->translator->translate('Intl_Hours'),
             'hours_ago'        => $this->translator->translate('UserCountryMap_HoursAgo'),
             'days_ago'         => $this->translator->translate('UserCountryMap_DaysAgo'),
-            'actions'          => $this->translator->translate('VisitsSummary_NbPageviewsDescription'),
+            'actions'          => $this->translator->translate('Transitions_NumPageviews'),
             'searches'         => $this->translator->translate('UserCountryMap_Searches'),
             'goal_conversions' => $this->translator->translate('UserCountryMap_GoalConversions'),
         );

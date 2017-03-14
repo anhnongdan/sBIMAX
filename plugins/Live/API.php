@@ -12,16 +12,10 @@ use Exception;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\DataTable;
-use Piwik\DataTable\Row;
 use Piwik\Date;
-use Piwik\Db;
-use Piwik\Metrics\Formatter;
-use Piwik\Period;
 use Piwik\Piwik;
 use Piwik\Plugins\SitesManager\API as APISitesManager;
-use Piwik\Segment;
 use Piwik\Site;
-use Piwik\Tracker;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -193,7 +187,7 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Returns an array describing a visitor using her last visits (uses a maximum of 100).
+     * Returns an array describing a visitor using their last visits (uses a maximum of 100).
      *
      * @param int $idSite Site ID
      * @param bool|false|string $visitorId The ID of the visitor whose profile to retrieve.

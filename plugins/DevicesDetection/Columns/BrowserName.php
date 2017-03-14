@@ -17,14 +17,14 @@ use Piwik\Tracker\Action;
 class BrowserName extends Base
 {
     protected $columnName = 'config_browser_name';
-    protected $columnType = 'VARCHAR(10) NOT NULL';
+    protected $columnType = 'VARCHAR(10) NULL';
 
     protected function configureSegments()
     {
         $segment = new Segment();
         $segment->setSegment('browserCode');
         $segment->setName('DevicesDetection_ColumnBrowser');
-        $segment->setAcceptedValues('FF, IE, CH, SF, OP, NW, etc.');
+        $segment->setAcceptedValues('FF, IE, CH, SF, OP, etc.');
         $this->addSegment($segment);
     }
 
