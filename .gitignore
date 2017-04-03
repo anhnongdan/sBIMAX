@@ -1,0 +1,5 @@
+/misc/*.dat
+/misc/*.dat.gz
+/misc/*.tar.gz
+
+.htaccess
