@@ -22,7 +22,13 @@ class GetLastVisitsDetails extends Base
         parent::init();
         $this->order = 2;
         $this->categoryId = 'General_Visitors';
-        $this->subcategoryId = 'Live_VisitorLog';
+        
+        /**
+         * [Thangnt 2017-03-10] Deregister unused subcategory for cBimax
+         */
+        if (\Piwik\Config::getInstance()->General['bimax_product'] != 'cbimax') {
+            $this->subcategoryId = 'Live_VisitorLog';
+        }
     }
 
     public function getDefaultTypeViewDataTable()
@@ -37,12 +43,17 @@ class GetLastVisitsDetails extends Base
 
     public function configureWidgets(WidgetsList $widgetsList, ReportWidgetFactory $factory)
     {
-        $widget = $factory->createWidget()
-                          ->forceViewDataTable(VisitorLog::ID)
-                          ->setName('Live_VisitorLog')
-                          ->setOrder(10)
-                          ->setParameters(array('small' => 1));
-        $widgetsList->addWidgetConfig($widget);
+        /**
+         * [Thangnt 2017-03-10] Deregister unused subcategory for cBimax
+         */
+        if (\Piwik\Config::getInstance()->General['bimax_product'] != 'cbimax') {
+            $widget = $factory->createWidget()
+                              ->forceViewDataTable(VisitorLog::ID)
+                              ->setName('Live_VisitorLog')
+                              ->setOrder(10)
+                              ->setParameters(array('small' => 1));
+            $widgetsList->addWidgetConfig($widget);
+        }
     }
 
 }

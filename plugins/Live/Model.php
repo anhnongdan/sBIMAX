@@ -39,6 +39,12 @@ class Model
         for ($i = 1; $i <= $maxCustomVariables; $i++) {
             $sqlCustomVariables .= ', custom_var_k' . $i . ', custom_var_v' . $i;
         }
+        
+        /**
+         * [Thangnt 2017-03-06] Count real time info. on tracker table for more accurate result.
+         */
+        $trackerTable = Common::prefixTable('log_link_visit_action', $isTracker=1);
+        
         // The second join is a LEFT join to allow returning records that don't have a matching page title
         // eg. Downloads, Outlinks. For these, idaction_name is set to 0
         $sql = "
@@ -48,25 +54,25 @@ class Model
 					log_action.url_prefix,
 					log_action_title.name AS pageTitle,
 					log_action.idaction AS pageIdAction,
-					log_link_visit_action.idlink_va,
-					log_link_visit_action.server_time as serverTimePretty,
-					log_link_visit_action.time_spent_ref_action as timeSpentRef,
-					log_link_visit_action.idlink_va AS pageId,
-					log_link_visit_action.custom_float,
-					log_link_visit_action.interaction_position
+					log_link_visit_action_tracker.idlink_va,
+					log_link_visit_action_tracker.server_time as serverTimePretty,
+					log_link_visit_action_tracker.time_spent_ref_action as timeSpentRef,
+					log_link_visit_action_tracker.idlink_va AS pageId,
+					log_link_visit_action_tracker.custom_float,
+					log_link_visit_action_tracker.interaction_position
 					" . $sqlCustomVariables . ",
 					log_action_event_category.name AS eventCategory,
 					log_action_event_action.name as eventAction
-				FROM " . Common::prefixTable('log_link_visit_action') . " AS log_link_visit_action
+				FROM " . $trackerTable . " AS log_link_visit_action_tracker
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action
-					ON  log_link_visit_action.idaction_url = log_action.idaction
+					ON  log_link_visit_action_tracker.idaction_url = log_action.idaction
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action_title
-					ON  log_link_visit_action.idaction_name = log_action_title.idaction
+					ON  log_link_visit_action_tracker.idaction_name = log_action_title.idaction
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action_event_category
-					ON  log_link_visit_action.idaction_event_category = log_action_event_category.idaction
+					ON  log_link_visit_action_tracker.idaction_event_category = log_action_event_category.idaction
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action_event_action
-					ON  log_link_visit_action.idaction_event_action = log_action_event_action.idaction
-				WHERE log_link_visit_action.idvisit = ?
+					ON  log_link_visit_action_tracker.idaction_event_action = log_action_event_action.idaction
+				WHERE log_link_visit_action_tracker.idvisit = ?
 				ORDER BY server_time ASC
 				LIMIT 0, $actionsLimit
 				 ";
@@ -205,8 +211,8 @@ class Model
             $lastMinutes,
             $segment,
             'COUNT(*)',
-            'log_link_visit_action',
-            'log_link_visit_action.server_time >= ?'
+            'log_link_visit_action_tracker',
+            'log_link_visit_action_tracker.server_time >= ?'
         );
     }
 
