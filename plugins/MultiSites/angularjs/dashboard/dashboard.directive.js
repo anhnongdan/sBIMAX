@@ -11,7 +11,6 @@
  *
  * <div piwik-multisites-dashboard
  *      display-revenue-column="true"
- *      display-bandwidth-column="true"
  *      show-sparklines="true"
  *      date-sparkline="true"
  *      page-size="50"
@@ -28,8 +27,7 @@
         return {
             restrict: 'A',
             scope: {
-                displayBandwidthColumn: '@',
-                displayAvgBandwidthColumn: '@',
+                displayRevenueColumn: '@',
                 showSparklines: '@',
                 dateSparkline: '@'
             },

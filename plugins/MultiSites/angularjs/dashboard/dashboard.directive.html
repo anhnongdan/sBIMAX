@@ -6,7 +6,7 @@
         {{ 'General_AllWebsitesDashboard'|translate }}
         <span class='smallTitle'
               title="{{ 'General_EvolutionSummaryGeneric'|translate:('General_NVisits'|translate:model.totalVisits):date:model.lastVisits:model.lastVisitsDate:(model.totalVisits|evolution:model.lastVisits)}}"
-              ng-bind-html="'MultiSites_TotalVisitsPageviewsActionsBandwidth' | translate:('<strong>'+model.totalVisits+'</strong>'):('<strong>'+model.totalPageviews+'</strong>'):('<strong>'+model.totalActions+'</strong>'):('<strong>' + model.totalSumBandwidth + '</strong>')">
+              ng-bind-html="'General_TotalVisitsPageviewsActionsRevenue' | translate:('<strong>'+model.totalVisits+'</strong>'):('<strong>'+model.totalPageviews+'</strong>'):('<strong>'+model.totalActions+'</strong>'):('<strong>' + model.totalRevenue + '</strong>')">
         </span>
     </h2>
 
@@ -26,11 +26,22 @@
                 <span class="heading">{{ 'General_ColumnPageviews'|translate }}</span>
             </th>
 
-            <th ng-if="displayBandwidthColumn" id="nb_total_overall_bandwidth" class="multisites-column" ng-click="model.sortBy('Bandwidth_nb_total_overall')" ng-class="{columnSorted: 'Bandwidth_nb_total_overall' == model.sortColumn}">
-                <span ng-class="{multisites_asc: !model.reverse && 'Bandwidth_nb_total_overall' == model.sortColumn, multisites_desc: model.reverse && 'Bandwidth_nb_total_overall' == model.sortColumn}" class="arrow"></span>
-                <span class="heading">{{ 'MultiSites_ColumnTotalOverallBandwidth'|translate }}</span>
+            <th ng-if="displayRevenueColumn" id="revenue" class="multisites-column" ng-click="model.sortBy('revenue')" ng-class="{columnSorted: 'revenue' == model.sortColumn}">
+                <span ng-class="{multisites_asc: !model.reverse && 'revenue' == model.sortColumn, multisites_desc: model.reverse && 'revenue' == model.sortColumn}" class="arrow"></span>
+                <span class="heading">{{ 'General_ColumnRevenue'|translate }}</span>
             </th>
-            
+
+            <th id="evolution" colspan="{{ showSparklines ? 2 : 1 }}" ng-class="{columnSorted: evolutionSelector == model.sortColumn}">
+                <span class="arrow" ng-class="{multisites_asc: !model.reverse && evolutionSelector == model.sortColumn, multisites_desc: model.reverse && evolutionSelector == model.sortColumn}"></span>
+                <span class="evolution"
+                      ng-click="model.sortBy(evolutionSelector)"> {{ 'MultiSites_Evolution'|translate }}</span>
+                <select class="selector browser-default" id="evolution_selector" ng-model="evolutionSelector"
+                        ng-change="model.sortBy(evolutionSelector)">
+                    <option value="visits_evolution">{{ 'General_ColumnNbVisits'|translate }}</option>
+                    <option value="pageviews_evolution">{{ 'General_ColumnPageviews'|translate }}</option>
+                    <option ng-if="displayRevenueColumn" value="revenue_evolution">{{ 'General_ColumnRevenue'|translate }}</option>
+                </select>
+            </th>
         </tr>
         </thead>
 
@@ -67,7 +78,7 @@
                 date-sparkline="dateSparkline"
                 show-sparklines="showSparklines"
                 metric="model.sortColumn"
-                display-bandwidth-column="displayBandwidthColumn"
+                display-revenue-column="displayRevenueColumn"
                 ng-repeat="website in model.sites">
             </tr>
         </tbody>

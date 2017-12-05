@@ -24,6 +24,11 @@ class Media extends LogTable
         return 'log_media';
     }
 
+    public function getIdColumn()
+    {
+        return 'idvisit';
+    }
+
     public function getColumnToJoinOnIdVisit()
     {
         return 'idvisit';

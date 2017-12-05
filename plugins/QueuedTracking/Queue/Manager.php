@@ -206,6 +206,7 @@ class Manager
 
     protected function getQueueIdForVisitor($visitorId)
     {
+	return $this->getRandomQueueId();
         $visitorId = strtolower(substr($visitorId, 0, 1));
 
         if (isset($this->mappingLettersToNumeric[$visitorId])) {

@@ -1,0 +1,25 @@
+{
+  "name": "AbTesting",
+  "version": "3.1.6",
+  "description": "Increase revenue and conversions by comparing different versions of your websites or apps & detect the winning variation that will grow your business!",
+  "theme": false,
+  "require": {
+    "piwik": ">=3.0.0-b5,<4.0.0-b1"
+  },
+  "authors": [
+    {
+      "name": "InnoCraft",
+      "email": "contact@innocraft.com",
+      "homepage": "https://www.innocraft.com"
+    }
+  ],
+  "price": {
+    "base": 200
+  },
+  "archive": {
+    "exclude": ["/tracker.js", "/CHANGELOG.md"]
+  },
+  "homepage": "https://www.ab-tests.net",
+  "license": "InnoCraft EULA",
+  "keywords": ["a/b", "tests", "split", "abtests", "test", "experiments", "variation", "variant", "optimze", "improve", "cro", "marketing"]
+}

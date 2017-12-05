@@ -1,0 +1,3 @@
+## Documentation
+
+The [Heatmap User Guide](https://piwik.org/docs/heatmaps/), [Session Recording User Guide](https://piwik.org/docs/session-recording/) and the [Heatmap & Session Recording User FAQ](https://piwik.org/faq/heatmap-session-recording/) cover how to get the most out of this plugin. The [Heatmap & Session Recording developer guides](https://developer.piwik.org/guides/heatmap-session-recording) help you customizing the tracking of your heatmaps and session recordings.

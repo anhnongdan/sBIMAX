@@ -89,6 +89,17 @@ $.extend(DataTable.prototype, UIControl.prototype, {
         // initialize your dataTable in your plugin
     },
 
+    _destroy: function() {
+      UIControl.prototype._destroy.call(this);
+      // remove handlers to avoid memory leaks
+      if (this.windowResizeTableAttached) {
+        $(window).off('resize', this._resizeDataTable);
+      }
+      if (this._bodyMouseUp) {
+        $('body').off('mouseup', this._bodyMouseUp);
+      }
+    },
+
     //initialisation function
     init: function () {
         var domElem = this.$element;
@@ -96,6 +107,7 @@ $.extend(DataTable.prototype, UIControl.prototype, {
         this.workingDivId = this._createDivId();
         domElem.attr('id', this.workingDivId);
 
+        this.maxNumRowsToHandleEvents = 255;
         this.loadedSubDataTable = {};
         this.isEmpty = $('.pk-emptyDataTable', domElem).length > 0;
         this.bindEventsAndApplyStyle(domElem);
@@ -264,7 +276,7 @@ $.extend(DataTable.prototype, UIControl.prototype, {
     // Function called when the AJAX request is successful
     // it looks for the ID of the response and replace the very same ID
     // in the current page with the AJAX response
-    dataTableLoaded: function (response, workingDivId) {
+    dataTableLoaded: function (response, workingDivId, doScroll) {
         var content = $(response);
 
         if ($.trim($('.dataTableControls', content).html()) === '') {
@@ -293,7 +305,10 @@ $.extend(DataTable.prototype, UIControl.prototype, {
 
         content.trigger('piwik:dataTableLoaded');
 
-        piwikHelper.lazyScrollTo(content[0], 400);
+        if (doScroll || 'undefined' === typeof doScroll) {
+            piwikHelper.lazyScrollTo(content[0], 400);
+        }
+
         piwikHelper.compileAngularComponents(content);
 
         return content;
@@ -573,6 +588,7 @@ $.extend(DataTable.prototype, UIControl.prototype, {
             }
 
             $(window).on('resize', resizeDataTable);
+            self._resizeDataTable = resizeDataTable;
         }
     },
 
@@ -1175,11 +1191,12 @@ $.extend(DataTable.prototype, UIControl.prototype, {
         });
 
         //close exportToFormat onClickOutside
-        $('body').on('mouseup', function (e) {
+        self._bodyMouseUp = function (e) {
             if (self.exportToFormat) {
                 self.exportToFormatHide(domElem);
             }
-        });
+        };
+        $('body').on('mouseup', self._bodyMouseUp);
 
         $('.exportToFormatItems a', domElem)
             // prevent click jacking attacks by dynamically adding the token auth when the link is clicked
@@ -1543,63 +1560,64 @@ $.extend(DataTable.prototype, UIControl.prototype, {
     },
 
     handleColumnHighlighting: function (domElem) {
+        if (!this.canHandleRowEvents(domElem)) {
+            return;
+        }
 
         var maxWidth = {};
         var currentNthChild = null;
         var self = this;
 
         // higlight all columns on hover
-        $('td', domElem).hover(
-            function() {
-
-                if ($(this).hasClass('label')) {
-                    return;
-                }
-
-                var table    = $(this).closest('table');
-                var nthChild = $(this).parent('tr').children().index($(this)) + 1;
-                var rows     = $('> tbody > tr', table);
-
-                if (!maxWidth[nthChild]) {
-                    maxWidth[nthChild] = 0;
-                    rows.find("td:nth-child(" + (nthChild) + ").column .value").each(function (index, element) {
-                        var width = $(element).width();
-                        if (width > maxWidth[nthChild]) {
-                            maxWidth[nthChild] = width;
-                        }
-                    });
-                    rows.find("td:nth-child(" + (nthChild) + ").column .value").each(function (index, element) {
-                        $(element).css({width: maxWidth[nthChild], display: 'inline-block'});
-                    });
-                }
-
-                if (currentNthChild === nthChild) {
-                    return;
-                }
-
-                currentNthChild = nthChild;
-
-                rows.children("td:nth-child(" + (nthChild) + ")").addClass('highlight');
-                self.repositionRowActions($(this).parent('tr'));
-            },
-            function(event) {
-
-                var table    = $(this).closest('table');
-                var tr       = $(this).parent('tr').children();
-                var nthChild = $(this).parent('tr').children().index($(this));
-                var targetTd = $(event.relatedTarget).closest('td');
-                var nthChildTarget = targetTd.parent('tr').children().index(targetTd);
-
-                if (nthChild == nthChildTarget) {
-                    return;
-                }
-
-                currentNthChild = null;
-
-                var rows     = $('tr', table);
-                rows.find("td:nth-child(" + (nthChild + 1) + ")").removeClass('highlight');
+        $('td', domElem).hover(function() {
+            var $this = $(this);
+            if ($this.hasClass('label')) {
+                return;
             }
-        );
+
+            var table    = $this.closest('table');
+            var nthChild = $this.parent('tr').children().index($(this)) + 1;
+            var rows     = $('> tbody > tr', table);
+
+            if (!maxWidth[nthChild]) {
+                maxWidth[nthChild] = 0;
+                rows.find("td:nth-child(" + (nthChild) + ").column .value").each(function (index, element) {
+                    var width = $(element).width();
+                    if (width > maxWidth[nthChild]) {
+                        maxWidth[nthChild] = width;
+                    }
+                });
+                rows.find("td:nth-child(" + (nthChild) + ").column .value").each(function (index, element) {
+                    $(element).css({width: maxWidth[nthChild], display: 'inline-block'});
+                });
+            }
+
+            if (currentNthChild === nthChild) {
+                return;
+            }
+
+            currentNthChild = nthChild;
+
+            rows.children("td:nth-child(" + (nthChild) + ")").addClass('highlight');
+            self.repositionRowActions($this.parent('tr'));
+        }, function(event) {
+            var $this = $(this);
+            var table    = $this.closest('table');
+            var $parentTr = $this.parent('tr');
+            var tr       = $parentTr.children();
+            var nthChild = $parentTr.children().index($this);
+            var targetTd = $(event.relatedTarget).closest('td');
+            var nthChildTarget = targetTd.parent('tr').children().index(targetTd);
+
+            if (nthChild == nthChildTarget) {
+                return;
+            }
+
+            currentNthChild = null;
+
+            var rows = $('tr', table);
+            rows.find("td:nth-child(" + (nthChild + 1) + ")").removeClass('highlight');
+        });
     },
 
     //behaviour for 'nested DataTable' (DataTable loaded on a click on a row)
@@ -1713,6 +1731,10 @@ $.extend(DataTable.prototype, UIControl.prototype, {
                 $(this).prev().stop(true, true).fadeOut(400);
             });
         });
+    },
+
+    canHandleRowEvents: function (domElem) {
+        return domElem.find('table > tbody > tr').size() <= this.maxNumRowsToHandleEvents;
     },
 
     handleRowActions: function (domElem) {
@@ -1859,6 +1881,10 @@ $.extend(DataTable.prototype, UIControl.prototype, {
 
     // also used in action data table
     doHandleRowActions: function (trs) {
+        if (!trs || trs.length > this.maxNumRowsToHandleEvents) {
+            return;
+        }
+
         var self = this;
 
         var merged = $.extend({}, self.param, self.props);
@@ -1890,23 +1916,44 @@ $.extend(DataTable.prototype, UIControl.prototype, {
             // show actions that are available for the row on hover
             var actionsDom = null;
 
-            tr.hover(function () {
-                    if (actionsDom === null) {
-                        // create dom nodes on the fly
-                        actionsDom = self.createRowActions(availableActionsForReport, tr, actionInstances);
-                        td.prepend(actionsDom);
-                    }
-                    // reposition and show the actions
-                    self.repositionRowActions(tr);
-                    if ($(window).width() >= 600) {
-                        actionsDom.show();
-                    }
-                },
-                function () {
+            var useTouchEvent = false;
+            var listenEvent = 'mouseenter';
+            var userAgent = String(navigator.userAgent).toLowerCase();
+            if (userAgent.match(/(iPod|iPhone|iPad|Android|IEMobile|Windows Phone)/i)) {
+                useTouchEvent = true;
+                listenEvent = 'click';
+            }
+
+            tr.on(listenEvent, function () {
+                if (useTouchEvent && actionsDom && actionsDom.prop('rowActionsVisible')) {
+                    actionsDom.prop('rowActionsVisible', false);
+                    actionsDom.hide();
+                    return;
+                }
+
+                if (actionsDom === null) {
+                    // create dom nodes on the fly
+                    actionsDom = self.createRowActions(availableActionsForReport, tr, actionInstances);
+                    td.prepend(actionsDom);
+                }
+
+                // reposition and show the actions
+                self.repositionRowActions(tr);
+                if ($(window).width() >= 600 || useTouchEvent) {
+                    actionsDom.show();
+                }
+
+                if (useTouchEvent) {
+                    actionsDom.prop('rowActionsVisible', true);
+                }
+            });
+            if (!useTouchEvent) {
+                tr.on('mouseleave', function () {
                     if (actionsDom !== null) {
                         actionsDom.hide();
                     }
                 });
+            }
         });
     },
 

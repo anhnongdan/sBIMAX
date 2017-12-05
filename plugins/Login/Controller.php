@@ -156,7 +156,7 @@ class Controller extends \Piwik\Plugin\Controller
 
         $urlToRedirect = Common::getRequestVar('url', $currentUrl, 'string');
         $urlToRedirect = Common::unsanitizeInputValue($urlToRedirect);
-
+	
         $this->authenticateAndRedirect($login, $password, false, $urlToRedirect, $passwordHashed = true);
     }
 
@@ -207,9 +207,15 @@ class Controller extends \Piwik\Plugin\Controller
         $this->passwordResetter->removePasswordResetInfo($login);
 
         if (empty($urlToRedirect)) {
+            $homeUrl = @Config::getInstance()->General['home_url'];
             $urlToRedirect = Url::getCurrentUrlWithoutQueryString();
+	    if (strpos($urlToRedirect, 'index.php') !== false) {
+      		$urlToRedirect = str_replace("/index.php", $homeUrl . "/index.php", $urlToRedirect);
+	    } else {
+		$urlToRedirect .= $homeUrl;
+ 	    }
+		
         }
-
         Url::redirectToUrl($urlToRedirect);
     }
 

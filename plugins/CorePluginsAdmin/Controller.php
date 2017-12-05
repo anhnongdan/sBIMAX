@@ -11,7 +11,6 @@ namespace Piwik\Plugins\CorePluginsAdmin;
 use Exception;
 use Piwik\API\Request;
 use Piwik\Common;
-use Piwik\Config;
 use Piwik\Container\StaticContainer;
 use Piwik\Exception\MissingFilePermissionException;
 use Piwik\Filechecks;
@@ -87,6 +86,10 @@ class Controller extends Plugin\ControllerAdmin
     {
         static::dieIfPluginsAdminIsDisabled();
         Piwik::checkUserHasSuperUserAccess();
+
+        if (!CorePluginsAdmin::isPluginUploadEnabled()) {
+            throw new \Exception('Plugin upload disabled by config');
+        }
 
         $nonce = Common::getRequestVar('nonce', null, 'string');
 
@@ -180,6 +183,9 @@ class Controller extends Plugin\ControllerAdmin
             }
         }
 
+        $view->isPluginUploadEnabled = CorePluginsAdmin::isPluginUploadEnabled();
+        $view->installNonce = Nonce::getNonce(MarketplaceController::INSTALL_NONCE);
+
         return $view;
     }
 
@@ -219,6 +225,16 @@ class Controller extends Plugin\ControllerAdmin
         foreach ($plugins as $pluginName => &$plugin) {
 
             $plugin['isCorePlugin'] = $this->pluginManager->isPluginBundledWithCore($pluginName);
+            $plugin['isOfficialPlugin'] = false;
+
+            if (isset($plugin['info']) && isset($plugin['info']['authors'])) {
+                foreach ($plugin['info']['authors'] as $author) {
+                    if (in_array(strtolower($author['name']), array('piwik', 'innocraft'))) {
+                        $plugin['isOfficialPlugin'] = true;
+                        break;
+                    }
+                }
+            }
 
             if (!empty($plugin['info']['description'])) {
                 $plugin['info']['description'] = $this->translator->translate($plugin['info']['description']);
@@ -233,10 +249,19 @@ class Controller extends Plugin\ControllerAdmin
                     $suffix = "You may uninstall the plugin or manually delete the files in piwik/plugins/$pluginName/";
                 }
 
-                $description = '<strong>'
-                    . $this->translator->translate('CorePluginsAdmin_PluginNotCompatibleWith', array($pluginName, self::getPiwikVersion()))
-                    . '</strong><br/>'
-                    . $suffix;
+                if ($this->pluginManager->isPluginInFilesystem($pluginName)) {
+                    $description = '<strong>'
+                        . $this->translator->translate('CorePluginsAdmin_PluginNotCompatibleWith',
+                            array($pluginName, self::getPiwikVersion()))
+                        . '</strong><br/>'
+                        . $suffix;
+                } else {
+                    $description = '<strong>'
+                        . $this->translator->translate('CorePluginsAdmin_PluginNotFound',
+                            array($pluginName))
+                        . '</strong><br/>'
+                        . $this->translator->translate('CorePluginsAdmin_PluginNotFoundAlternative');
+                }
                 $plugin['info'] = array(
                     'description' => $description,
                     'version'     => $this->translator->translate('General_Unknown'),
@@ -269,7 +294,9 @@ class Controller extends Plugin\ControllerAdmin
 
     public function safemode($lastError = array())
     {
-        ob_clean();
+        if (ob_get_length()) {
+            ob_clean();
+        }
         
         $this->tryToRepairPiwik();
 

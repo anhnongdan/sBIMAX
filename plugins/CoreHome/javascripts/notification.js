@@ -108,7 +108,7 @@
         }
 
         $notificationNode = $notificationNode.hide();
-        $(options.placeat || '#notificationContainer').append($notificationNode);
+        //$(options.placeat || '#notificationContainer').append($notificationNode);
 
         if (false === options.animate) {
             $notificationNode.show();

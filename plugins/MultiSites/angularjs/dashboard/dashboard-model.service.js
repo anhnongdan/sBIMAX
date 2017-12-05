@@ -19,7 +19,7 @@
             totalVisits  : '?',
             totalPageviews : '?',
             totalActions : '?',
-            totalSumBandwidth : '?',
+            totalRevenue : '?',
             searchTerm   : '',
             lastVisits   : '?',
             lastVisitsDate : '?',
@@ -65,13 +65,13 @@
             angular.forEach(allSites, function (site, index) {
                 site.visits_evolution    = parseInt(site.visits_evolution, 10);
                 site.pageviews_evolution = parseInt(site.pageviews_evolution, 10);
-                site.sumBandwidth_evolution   = parseInt(site.sumBandwidth_evolution, 10);
+                site.revenue_evolution   = parseInt(site.revenue_evolution, 10);
             });
 
             model.totalVisits   = report.totals.nb_visits;
             model.totalPageviews  = report.totals.nb_pageviews;
             model.totalActions  = report.totals.nb_actions;
-            model.totalSumBandwidth  = report.totals.nb_total_overall_bandwidth;
+            model.totalRevenue  = report.totals.revenue;
             model.lastVisits    = report.totals.nb_visits_lastdate;
             model.sites = allSites;
             model.numberOfSites  = report.numSites;
@@ -146,7 +146,7 @@
                 filter_sort_order: 'asc',
                 filter_limit: model.pageSize,
                 filter_offset: getCurrentPagingOffsetStart(),
-                showColumns: 'label,nb_visits,nb_pageviews,visits_evolution,pageviews_evolution,sumBandwidth_evolution,nb_actions,nb_total_overall_bandwidth,avg_bandwidth'
+                showColumns: 'label,nb_visits,nb_pageviews,visits_evolution,pageviews_evolution,revenue_evolution,nb_actions,revenue'
             };
 
             if (model.searchTerm) {
@@ -163,7 +163,7 @@
 
             return piwikApi.fetch(params).then(function (response) {
                 updateWebsitesList(response);
-            }, onError)['finally'](function () {
+            }, onError).finally(function () {
                 model.isLoading = false;
 
                 if (model.refreshInterval && model.refreshInterval > 0) {

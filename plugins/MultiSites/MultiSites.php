@@ -32,11 +32,10 @@ class MultiSites extends \Piwik\Plugin
             'visits_evolution'    => Piwik::translate('General_ColumnNbVisits') . $appendix,
             'actions_evolution'   => Piwik::translate('General_ColumnNbActions') . $appendix,
             'pageviews_evolution' => Piwik::translate('General_ColumnPageviews') . $appendix,
-            'nb_total_overall_bandwidth_evolution'   => Piwik::translate('MultiSites_ColumnTotalOverallBandwidth') . $appendix,
-            //'avg_bandwidth_evolution'       => Piwik::translate('MultiSites_ColumnAvgBandwidth') . $appendix,
+            'revenue_evolution'   => Piwik::translate('General_ColumnRevenue') . $appendix,
             'nb_conversions_evolution' => Piwik::translate('Goals_ColumnConversions') . $appendix,
             'orders_evolution'         => Piwik::translate('General_EcommerceOrders') . $appendix,
-            //'ecommerce_revenue_evolution' => Piwik::translate('General_ProductRevenue') . $appendix,
+            'ecommerce_revenue_evolution' => Piwik::translate('General_ProductRevenue') . $appendix,
         );
 
         $translations = array_merge($translations, $metrics);
@@ -47,13 +46,8 @@ class MultiSites extends \Piwik\Plugin
         $translations[] = 'General_Website';
         $translations[] = 'General_ColumnNbVisits';
         $translations[] = 'General_ColumnPageviews';
-        //$translations[] = 'General_ColumnRevenue';
-        $translations[] = 'MultiSites_ColumnTotalOverallBandwidth';
-        $translations[] = 'MultiSites_ColumnSumBandwidth';
-        $translations[] = 'MultiSites_ColumnAvgBandwidth';
+        $translations[] = 'General_ColumnRevenue';
         $translations[] = 'General_TotalVisitsPageviewsActionsRevenue';
-       // $translations[] = 'General_TotalVisitsPageviewsActionsBandwidth';
-        $translations[] = 'MultiSites_TotalVisitsPageviewsActionsBandwidth';
         $translations[] = 'General_EvolutionSummaryGeneric';
         $translations[] = 'General_AllWebsitesDashboard';
         $translations[] = 'General_NVisits';

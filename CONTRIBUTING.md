@@ -1,1 +1,0 @@
-BimaxCore/CONTRIBUTING.md

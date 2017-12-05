@@ -1,0 +1,62 @@
+<div class="sessionRecordingPlayer">
+    <div class="controls">
+        <span class="playerActions">
+            <span ng-show="sessionVis.previousRecordingId"
+                  title="{{ 'HeatmapSessionRecording_PlayerPageViewPrevious'|translate:sessionVis.previousRecordingInfo:'P' }}"
+                  class="playerAction icon-skip-previous" ng-click="sessionVis.loadNewRecording(sessionVis.previousRecordingId)"></span>
+
+            <span class="playerAction icon-fast-rewind" title="{{ 'HeatmapSessionRecording_PlayerRewindFast'|translate:10:'J' }}" ng-click="sessionVis.jumpRelative(10, false)"></span>
+
+            <span ng-show="!sessionVis.isPlaying && !sessionVis.isFinished" class="playerAction icon-play" title="{{ 'HeatmapSessionRecording_PlayerPlay'|translate:'K' }}" ng-click="sessionVis.play()"></span>
+            <span ng-show="!sessionVis.isPlaying && sessionVis.isFinished" class="playerAction icon-replay" title="{{ 'HeatmapSessionRecording_PlayerReplay'|translate:'K' }}" ng-click="sessionVis.replay()"></span>
+            <span ng-show="sessionVis.isPlaying" ng-click="sessionVis.pause()" title="{{ 'HeatmapSessionRecording_PlayerPause'|translate:'K' }}" class="playerAction icon-pause"></span>
+
+            <span class="playerAction icon-fast-forward" title="{{ 'HeatmapSessionRecording_PlayerForwardFast'|translate:10:'L' }}" ng-click="sessionVis.jumpRelative(10, true)"></span>
+            <span ng-show="sessionVis.nextRecordingId" class="playerAction icon-skip-next"
+                  title="{{ 'HeatmapSessionRecording_PlayerPageViewNext'|translate:sessionVis.nextRecordingInfo:'N' }}"
+                  ng-click="sessionVis.loadNewRecording(sessionVis.nextRecordingId)"></span>
+
+            <span class="duration">{{ 'HeatmapSessionRecording_PlayerDurationXofY'|translate:sessionVis.positionPretty:sessionVis.durationPretty }}</span>
+        </span>
+        <div class="playerHelp">
+            <ul>
+                <li><span class="clickEvent"></span> {{ 'HeatmapSessionRecording_ActivityClick'|translate }}</li>
+                <li><span class="moveEvent"></span> {{ 'HeatmapSessionRecording_ActivityMove'|translate }}</li>
+                <li><span class="scrollEvent"></span> {{ 'HeatmapSessionRecording_ActivityScroll'|translate }}</li>
+                <li><span class="resizeEvent"></span> {{ 'HeatmapSessionRecording_ActivityResize'|translate }}</li>
+                <li><span class="formChange"></span> {{ 'HeatmapSessionRecording_ActivityFormChange'|translate }}</li>
+                <li><span class="mutationEvent"></span> {{ 'HeatmapSessionRecording_ActivityPageChange'|translate }}</li>
+            </ul>
+        </div>
+        <br style="clear: right;" />
+    </div>
+    <div class="timelineOuter" ng-click="sessionVis.seekEvent($event)"
+         ng-style="{width: (sessionVis.replayWidth + 'px')}">
+        <div class="timelineInner"
+             ng-style="{width: (sessionVis.progress + '%')}"></div>
+        <div ng-repeat="clue in sessionVis.clues" title="{{ clue.title }}"
+             ng-style="{left: (clue.left + '%')}" ng-class="clue.type"></div>
+    </div>
+
+    <br />
+    <div ng-show="sessionVis.isLoading" class="hsrLoadingOuter"
+         ng-style="{width: (sessionVis.replayWidth + 'px'), height: (sessionVis.replayHeight + 'px')}">
+        <div class="loadingUnderlay"></div>
+        <div class="valign-wrapper loadingInner"><div class="loadingContent">{{ 'General_Loading'|translate }}</div></div>
+    </div>
+
+    <div class="replayContainerOuter"
+         ng-style="{height: (sessionVis.replayHeight + 'px'),width: (sessionVis.replayWidth + 'px')}"
+         ng-click="sessionVis.togglePlay()">
+    <div class="replayContainerInner" style="transform-origin: 0 0;"
+        ng-style="{transform: ('scale(' + sessionVis.replayScale +')'),'margin-left': (sessionVis.replayMarginLeft + 'px')}">
+    <iframe id="recordingPlayer"
+            hsr-iframe-load="sessionVis.onloaded()"
+            scrolling="no"
+            ng-src="{{ sessionVis.embedUrl }}"
+            width="{{ sessionVis.recording.viewport_w_px }}"
+            height="{{ sessionVis.recording.viewport_h_px }}"></iframe>
+    </div>
+    </div>
+
+</div>

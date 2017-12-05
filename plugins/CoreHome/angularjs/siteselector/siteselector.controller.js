@@ -37,5 +37,18 @@
             return piwik.helper.getCurrentQueryStringWithParametersModified(newParameters) +
             '#' + piwik.helper.getQueryStringWithParametersModified(hash.substring(1), newParameters);
         };
+
+        Mousetrap.bind('w', function(event) {
+            if (event.altKey) {
+                return;
+            }
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false; // IE
+            }
+            $('.siteSelector .title').trigger('click').focus();
+        });
     }
+
 })();

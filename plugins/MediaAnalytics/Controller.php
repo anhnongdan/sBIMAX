@@ -19,6 +19,7 @@ use Piwik\API\Request;
 use Piwik\Common;
 use Piwik\DataTable\Renderer\Json;
 use Piwik\FrontController;
+use Piwik\Http;
 use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Piwik;
 use Piwik\Plugin\ReportsProvider;
@@ -85,11 +86,17 @@ class Controller extends \Piwik\Plugin\Controller
         $this->checkSitePermission();
         // it is not a widget (yet) because we need to forward $fetch
 
+        $queryBackup = $_SERVER['QUERY_STRING'];
+
         $saveGET = $_GET;
-        $_GET['segment'] = BaseWidget::getMediaSegment();
+        $_GET['segment'] = urldecode(BaseWidget::getMediaSegment());
         $_GET['widget'] = 1;
+        $_SERVER['QUERY_STRING'] = Http::buildQuery($_GET); // used eg in https://github.com/piwik/piwik/blob/3.0.4/core/API/Request.php#L408-L415
+
         $output = FrontController::getInstance()->dispatch('Live', 'getVisitorLog', array($fetch));
-        $_GET   = $saveGET;
+
+        $_GET = $saveGET;
+        $_SERVER['QUERY_STRING'] = $queryBackup;
 
         return $output;
     }

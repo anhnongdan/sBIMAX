@@ -17,11 +17,10 @@
                 <div class="card-content">
         {% endif %}
                 <div piwik-multisites-dashboard
-                     display-bandwidth-column="{% if displayBandwidthColumn %}true{% else %}false{%endif%}"
-		     {#display-avgbandwidth-column="{% if displayAvgBandwidthColumn %}true{% else %}false{%endif%}"#}
+                     display-revenue-column="{% if displayRevenueColumn %}true{% else %}false{%endif%}"
                      page-size="{{ limit }}"
-                     {#show-sparklines="{% if show_sparklines %}true{% else %}false{%endif%}"
-                     date-sparkline="{{ dateSparkline }}" #}
+                     show-sparklines="{% if show_sparklines %}true{% else %}false{%endif%}"
+                     date-sparkline="{{ dateSparkline }}"
                      auto-refresh-today-report="{{ autoRefreshTodayReport }}">
                 </div>
         {% if isWidgetized %}

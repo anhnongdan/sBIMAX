@@ -1,6 +1,6 @@
 {
   "name": "MediaAnalytics",
-  "version": "3.0.4",
+  "version": "3.0.10",
   "description": "Grow your business with advanced video & audio analytics. Get powerful insights into how your audience watches your videos and listens to your audio.",
   "theme": false,
   "require": {
@@ -13,6 +13,10 @@
       "homepage": "https://www.innocraft.com"
     }
   ],
+  "preview": {
+    "video_url": "https://www.youtube.com/embed/uyhjFTafDUQ",
+    "demo_url": "https://piwik.org/blog/2017/01/media-analytics-piwik-gives-insights-need-measure-effective-video-audio-marketing-part-1/"
+  },
   "price": {
     "base": 150
   },

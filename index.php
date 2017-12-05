@@ -1,1 +1,0 @@
-BimaxCore/index.php

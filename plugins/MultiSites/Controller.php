@@ -17,7 +17,6 @@ use Piwik\DataTable\Row;
 use Piwik\Piwik;
 use Piwik\Translation\Translator;
 use Piwik\View;
-use Piwik\Plugin\Manager;
 
 class Controller extends \Piwik\Plugin\Controller
 {
@@ -80,18 +79,10 @@ class Controller extends \Piwik\Plugin\Controller
 
         $view = new View("@MultiSites/getSitesInfo");
 
-        $view->isWidgetized = $isWidgetized;
-        
-        /**#Thang 05/27
-         * Can I centralize checking Bandwidth plugin enabled??
-         * (with API getApiMetrics())
-         */
-        //$view->displayRevenueColumn = Common::isGoalPluginEnabled();
-        $view->displayBandwidthColumn = Manager::getInstance()->isPluginActivated('Bandwidth');
-        //$view->displayAvgBandwidthColumn = $view->displayBandwidthColumn;
-        $view->limit = Config::getInstance()->General['all_websites_website_per_page'];
-        // no need for sparlines but leave this here for now
-        //$view->show_sparklines = Config::getInstance()->General['show_multisites_sparklines'];
+        $view->isWidgetized         = $isWidgetized;
+        $view->displayRevenueColumn = Common::isGoalPluginEnabled();
+        $view->limit                = Config::getInstance()->General['all_websites_website_per_page'];
+        $view->show_sparklines      = Config::getInstance()->General['show_multisites_sparklines'];
 
         $view->autoRefreshTodayReport = 0;
         // if the current date is today, or yesterday,
@@ -104,7 +95,7 @@ class Controller extends \Piwik\Plugin\Controller
         }
 
         $params = $this->getGraphParamsModified();
-        //$view->dateSparkline = $period == 'range' ? $date : $params['date'];
+        $view->dateSparkline = $period == 'range' ? $date : $params['date'];
 
         $this->setGeneralVariablesView($view);
 
@@ -113,44 +104,17 @@ class Controller extends \Piwik\Plugin\Controller
         return $view->render();
     }
 
-    //Called last to get the Evolution Graph
-//    public function getEvolutionGraph($columns = false) {
-//        if (empty($columns)) {
-//            $columns = Common::getRequestVar('columns');
-//        }
-//        $api = "API.get";
-//
-//        if ($columns == 'revenue') {
-//            $api = "Goals.get";
-//        }
-//        
-//        $view = $this->getLastUnitGraph($this->pluginName, __FUNCTION__, $api);
-//        return $this->renderView($view);
-//    }
-    
-    /*
-     * Thang 05/26: Refactor this function to pull data into BYTES TRANSFERED OVERALL 
-     * column. No need for Evolution Sparkline anymore
-     * TODO: Refactor this function name as well.
-     */    
-//    public function getEvolutionGraph($columns = false) {
-//        if (empty($columns)) {
-//            $columns = Common::getRequestVar('columns');
-//        }
-//        $api = "API.get";
-//
-//        //could the column show up??
-//        //I don't think that the revenue column is retreive here. Anw it's allright.
-//        //I MUST keep the API as API.get
-//        //if ($columns == 'nb_total_overall_bandwidth') {
-//        //    $api = "Goals.get";
-//        //}
-//        //$view = $this->getLastUnitGraph($this->pluginName, __FUNCTION__, $api);
-//        
-//        $view = ViewDataTableFactory::build(
-//                        $defaultType = null, $api, $this->pluginName . '.' . __FUNCTION__);
-//        
-//        return $this->renderView($view);
-//    }
-    
+    public function getEvolutionGraph($columns = false)
+    {
+        if (empty($columns)) {
+            $columns = Common::getRequestVar('columns');
+        }
+        $api = "API.get";
+
+        if ($columns == 'revenue') {
+            $api = "Goals.get";
+        }
+        $view = $this->getLastUnitGraph($this->pluginName, __FUNCTION__, $api);
+        return $this->renderView($view);
+    }
 }

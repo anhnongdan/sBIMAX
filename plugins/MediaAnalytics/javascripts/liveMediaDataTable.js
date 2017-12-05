@@ -14,6 +14,9 @@
 
 (function ($, require) {
 
+    // we cannot save the timer in the dataTable instance since the data table would be reset every time
+    var delay = null;
+
     var exports = require('piwik/UI'),
         DataTable = exports.DataTable,
         dataTablePrototype = DataTable.prototype;
@@ -41,6 +44,17 @@
                 return;
             }
 
+            if (null === delay) {
+                delay = this.param.updateInterval;
+            } else {
+                delay = delay + 2200;
+                // we slowly increase timeout
+            }
+
+            if (delay > 150000) {
+                delay = 150000; // max delay of 2.5min
+            }
+
             var self = this;
             this.refreshTimeout = setTimeout(function () {
                 self.reloadAjaxDataTable(false, function (response) {
@@ -59,7 +73,7 @@
                     }
                     $wrapper.effect('highlight', {}, 600);
                 });
-            }, this.param.updateInterval);
+            }, delay);
         }
     });
 

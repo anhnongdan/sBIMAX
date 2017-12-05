@@ -10,6 +10,7 @@ namespace Piwik\Plugins\UserCountry;
 
 use Exception;
 use Piwik\Archive;
+use Piwik\Container\StaticContainer;
 use Piwik\DataTable;
 use Piwik\Metrics;
 use Piwik\Piwik;
@@ -37,8 +38,7 @@ class API extends \Piwik\Plugin\API
         $dataTable->filter('ColumnCallbackAddMetadata', array('label', 'logo', __NAMESPACE__ . '\getFlagFromCode'));
         $dataTable->filter('ColumnCallbackReplace', array('label', __NAMESPACE__ . '\countryTranslate'));
 
-        $dataTable->queueFilter('ColumnCallbackAddMetadata', array(array(), 'logoWidth', function () { return 16; }));
-        $dataTable->queueFilter('ColumnCallbackAddMetadata', array(array(), 'logoHeight', function () { return 11; }));
+        $dataTable->queueFilter('ColumnCallbackAddMetadata', array(array(), 'logoHeight', function () { return 16; }));
 
         return $dataTable;
     }
@@ -162,6 +162,24 @@ class API extends \Piwik\Plugin\API
         $dataTable->queueFilter('ReplaceSummaryRowLabel');
 
         return $dataTable;
+    }
+
+    /**
+     * Returns a simple mapping from country code to country name
+     *
+     * @return \string[]
+     */
+    public function getCountryCodeMapping()
+    {
+        $regionDataProvider = StaticContainer::get('Piwik\Intl\Data\Provider\RegionDataProvider');
+
+        $countryCodeList = $regionDataProvider->getCountryList();
+
+        array_walk($countryCodeList, function(&$item, $key) {
+            $item = Piwik::translate('Intl_Country_'.strtoupper($key));
+        });
+
+        return $countryCodeList;
     }
 
     /**

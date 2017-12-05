@@ -52,7 +52,7 @@ class ImpressionRate extends ProcessedMetric
 
     public function getTemporaryMetrics()
     {
-        return array(PluginMetrics::METRIC_NB_UNIQUE_VISITORS);
+        return array();
     }
 
     public function format($value, Formatter $formatter)

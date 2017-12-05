@@ -475,9 +475,10 @@ class API extends \Piwik\Plugin\API
         // init report renderer
         $reportRenderer->setIdSite($idSite);
         $reportRenderer->setLocale($language);
+        $reportRenderer->setReport($report);
 
         // render report
-        $description = str_replace(array("\r", "\n"), ' ', $report['description']);
+        $description = str_replace(array("\r", "\n"), ' ', Common::unsanitizeInputValue($report['description']));
 
         list($reportSubject, $reportTitle) = self::getReportSubjectAndReportTitle(Common::unsanitizeInputValue(Site::getNameFor($idSite)), $report['reports']);
 

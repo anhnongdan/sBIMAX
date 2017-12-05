@@ -39,18 +39,6 @@ class API extends \Piwik\Plugin\API
     const NB_ACTIONS_METRIC = 'nb_actions';
     const NB_PAGEVIEWS_LABEL = 'nb_pageviews';
     const NB_PAGEVIEWS_METRIC = 'Actions_nb_pageviews';
-    
-    /*For bandwidth, get the METRIC in Bandwidth Archiver
-     * Actually this definition is duplicated which ones
-     * in Plugins\Bandwidth\Metrics
-     * METRICS is made up from [PluginName]_[MetricLabel]
-     */
-    const NB_BANDWIDTH_METRIC = 'Bandwidth_nb_total_overall';
-    const NB_BANDWIDTH_LABEL = 'nb_total_overall_bandwidth';
-//    const NB_AVGBANDWIDTH_LABEL = 'avg_bandwidth';
-//    const NB_AVGBANDWIDTH_METRIC = 'Bandwidth_avg_bandwidth';
-    
-//Don't need Revenue anymore.    
     const GOAL_REVENUE_METRIC = 'revenue';
     const GOAL_CONVERSION_METRIC = 'nb_conversions';
     const ECOMMERCE_ORDERS_METRIC = 'orders';
@@ -250,8 +238,6 @@ class API extends \Piwik\Plugin\API
 
         $this->populateLabel($dataTable);
         $totalMetrics = $this->preformatApiMetricsForTotalsCalculation($apiMetrics);
-        
-        //Not yet to implement the AvgBandwidth Total for now
         $this->setMetricsTotalsMetadata($dataTable, $totalMetrics);
 
         // if the period isn't a range & a lastN/previousN date isn't used, we get the same
@@ -299,7 +285,7 @@ class API extends \Piwik\Plugin\API
         // ResponseBuilder throws 'Call to a member function getColumns() on a non-object'
         if ($multipleWebsitesRequested
             // We don't delete the 0 visits row, if "Enhanced" mode is on.
-            && !$enhanced
+            && !$enhanced && (empty($showColumns) || in_array(self::NB_VISITS_METRIC, $showColumns))
         ) {
             $dataTable->filter(
                 'ColumnCallbackDeleteRow',
@@ -370,11 +356,6 @@ class API extends \Piwik\Plugin\API
     {
         $metrics = self::$baseMetrics;
 
-        /*
-         * Thang 05/26: if I comment out the below processes inside if()
-         * pageviews on the "All Website DashBoard Title" became false  
-         * and PAGEVIEWS column has no data to show
-         */
         if (Common::isActionsPluginEnabled()) {
             $metrics[self::NB_PAGEVIEWS_LABEL] = array(
                 self::METRIC_TRANSLATION_KEY        => 'General_ColumnPageviews',
@@ -384,81 +365,46 @@ class API extends \Piwik\Plugin\API
                 self::METRIC_IS_ECOMMERCE_KEY       => false,
             );
         }
-        
-        //If the plugin is enabled, inject the API metrics
-        //May be this is unnecessary, can I just manipulate the Bandwidth plugin
-        if (\Piwik\Plugin\Manager::getInstance()->isPluginActivated('Bandwidth')){
-           
-            /*
-             * Can I inject this from Bandwidth Plugin???
-             */
-            
-            $metrics[self::NB_BANDWIDTH_LABEL] = array(
-                self::METRIC_TRANSLATION_KEY        => 'MultiSites_ColumnTotalOverallBandwidth',
-                
-                /*#Thang 05/27: 
-                 * Becareful with the below Label Name, nailed 'sumBandwidth_evolution'
-                 * But sum and total is very inconsistent ><
-                 */
-                self::METRIC_EVOLUTION_COL_NAME_KEY => 'sumBandwidth_evolution',
-                self::METRIC_RECORD_NAME_KEY        => self::NB_BANDWIDTH_METRIC,
-                self::METRIC_COL_NAME_KEY           => self::NB_BANDWIDTH_LABEL,
-                self::METRIC_IS_ECOMMERCE_KEY       => false, //let it be ecommerce key
-            );           
-            
-//            $metrics[self::NB_AVGBANDWIDTH_LABEL] = array(
-//                self::METRIC_TRANSLATION_KEY        => 'Bandwidth_ColumnAvgBandwidth',                
-//                self::METRIC_EVOLUTION_COL_NAME_KEY => 'avg_bandwidth_evolution',
-//                self::METRIC_RECORD_NAME_KEY        => self::NB_AVGBANDWIDTH_METRIC,
-//                self::METRIC_COL_NAME_KEY           => self::NB_AVGBANDWIDTH_LABEL,
-//                self::METRIC_IS_ECOMMERCE_KEY       => false, //let it be ecommerce key
-//            ); 
-        }
 
-        //if (Common::isGoalPluginEnabled()) {
-            
-            /*
-             * No need for revenue any more
-             */
-            
+        if (Common::isGoalPluginEnabled()) {
             // goal revenue metric
-//            $metrics[self::GOAL_REVENUE_METRIC] = array(
-//                self::METRIC_TRANSLATION_KEY        => 'General_ColumnRevenue',
-//                self::METRIC_EVOLUTION_COL_NAME_KEY => self::GOAL_REVENUE_METRIC . '_evolution',
-//                self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_REVENUE_METRIC),
-//                self::METRIC_COL_NAME_KEY           => self::GOAL_REVENUE_METRIC,
-//                self::METRIC_IS_ECOMMERCE_KEY       => false,
-//            );
+            $metrics[self::GOAL_REVENUE_METRIC] = array(
+                self::METRIC_TRANSLATION_KEY        => 'General_ColumnRevenue',
+                self::METRIC_EVOLUTION_COL_NAME_KEY => self::GOAL_REVENUE_METRIC . '_evolution',
+                self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_REVENUE_METRIC),
+                self::METRIC_COL_NAME_KEY           => self::GOAL_REVENUE_METRIC,
+                self::METRIC_IS_ECOMMERCE_KEY       => false,
+            );
 
-//            if ($enhanced) {
-//                // number of goal conversions metric
-//                $metrics[self::GOAL_CONVERSION_METRIC] = array(
-//                    self::METRIC_TRANSLATION_KEY        => 'Goals_ColumnConversions',
-//                    self::METRIC_EVOLUTION_COL_NAME_KEY => self::GOAL_CONVERSION_METRIC . '_evolution',
-//                    self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_CONVERSION_METRIC),
-//                    self::METRIC_COL_NAME_KEY           => self::GOAL_CONVERSION_METRIC,
-//                    self::METRIC_IS_ECOMMERCE_KEY       => false,
-//                );
-//
-//                // number of orders
-//                $metrics[self::ECOMMERCE_ORDERS_METRIC] = array(
-//                    self::METRIC_TRANSLATION_KEY        => 'General_EcommerceOrders',
-//                    self::METRIC_EVOLUTION_COL_NAME_KEY => self::ECOMMERCE_ORDERS_METRIC . '_evolution',
-//                    self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_CONVERSION_METRIC, 0),
-//                    self::METRIC_COL_NAME_KEY           => self::ECOMMERCE_ORDERS_METRIC,
-//                    self::METRIC_IS_ECOMMERCE_KEY       => true,
-//                );
-//
-//                // eCommerce revenue
-//                $metrics[self::ECOMMERCE_REVENUE_METRIC] = array(
-//                    self::METRIC_TRANSLATION_KEY        => 'General_ProductRevenue',
-//                    self::METRIC_EVOLUTION_COL_NAME_KEY => self::ECOMMERCE_REVENUE_METRIC . '_evolution',
-//                    self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_REVENUE_METRIC, 0),
-//                    self::METRIC_COL_NAME_KEY           => self::ECOMMERCE_REVENUE_METRIC,
-//                    self::METRIC_IS_ECOMMERCE_KEY       => true,
-//                );
-//            }
-        //}
+            if ($enhanced) {
+                // number of goal conversions metric
+                $metrics[self::GOAL_CONVERSION_METRIC] = array(
+                    self::METRIC_TRANSLATION_KEY        => 'Goals_ColumnConversions',
+                    self::METRIC_EVOLUTION_COL_NAME_KEY => self::GOAL_CONVERSION_METRIC . '_evolution',
+                    self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_CONVERSION_METRIC),
+                    self::METRIC_COL_NAME_KEY           => self::GOAL_CONVERSION_METRIC,
+                    self::METRIC_IS_ECOMMERCE_KEY       => false,
+                );
+
+                // number of orders
+                $metrics[self::ECOMMERCE_ORDERS_METRIC] = array(
+                    self::METRIC_TRANSLATION_KEY        => 'General_EcommerceOrders',
+                    self::METRIC_EVOLUTION_COL_NAME_KEY => self::ECOMMERCE_ORDERS_METRIC . '_evolution',
+                    self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_CONVERSION_METRIC, 0),
+                    self::METRIC_COL_NAME_KEY           => self::ECOMMERCE_ORDERS_METRIC,
+                    self::METRIC_IS_ECOMMERCE_KEY       => true,
+                );
+
+                // eCommerce revenue
+                $metrics[self::ECOMMERCE_REVENUE_METRIC] = array(
+                    self::METRIC_TRANSLATION_KEY        => 'General_ProductRevenue',
+                    self::METRIC_EVOLUTION_COL_NAME_KEY => self::ECOMMERCE_REVENUE_METRIC . '_evolution',
+                    self::METRIC_RECORD_NAME_KEY        => Archiver::getRecordName(self::GOAL_REVENUE_METRIC, 0),
+                    self::METRIC_COL_NAME_KEY           => self::ECOMMERCE_REVENUE_METRIC,
+                    self::METRIC_IS_ECOMMERCE_KEY       => true,
+                );
+            }
+        }
 
         return $metrics;
     }
@@ -480,7 +426,7 @@ class API extends \Piwik\Plugin\API
      *
      * @param DataTable $dataTable
      * @param array $apiMetrics Metrics info.
-     * @return array Array of three values: total visits, total actions, total total_bandwidth
+     * @return array Array of three values: total visits, total actions, total revenue
      */
     private function setMetricsTotalsMetadata($dataTable, $apiMetrics)
     {

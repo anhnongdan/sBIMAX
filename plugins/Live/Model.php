@@ -39,12 +39,6 @@ class Model
         for ($i = 1; $i <= $maxCustomVariables; $i++) {
             $sqlCustomVariables .= ', custom_var_k' . $i . ', custom_var_v' . $i;
         }
-        
-        /**
-         * [Thangnt 2017-03-06] Count real time info. on tracker table for more accurate result.
-         */
-        $trackerTable = Common::prefixTable('log_link_visit_action', $isTracker=1);
-        
         // The second join is a LEFT join to allow returning records that don't have a matching page title
         // eg. Downloads, Outlinks. For these, idaction_name is set to 0
         $sql = "
@@ -54,25 +48,25 @@ class Model
 					log_action.url_prefix,
 					log_action_title.name AS pageTitle,
 					log_action.idaction AS pageIdAction,
-					log_link_visit_action_tracker.idlink_va,
-					log_link_visit_action_tracker.server_time as serverTimePretty,
-					log_link_visit_action_tracker.time_spent_ref_action as timeSpentRef,
-					log_link_visit_action_tracker.idlink_va AS pageId,
-					log_link_visit_action_tracker.custom_float,
-					log_link_visit_action_tracker.interaction_position
+					log_link_visit_action.idlink_va,
+					log_link_visit_action.server_time as serverTimePretty,
+					log_link_visit_action.time_spent_ref_action as timeSpentRef,
+					log_link_visit_action.idlink_va AS pageId,
+					log_link_visit_action.custom_float,
+					log_link_visit_action.interaction_position
 					" . $sqlCustomVariables . ",
 					log_action_event_category.name AS eventCategory,
 					log_action_event_action.name as eventAction
-				FROM " . $trackerTable . " AS log_link_visit_action_tracker
+				FROM " . Common::prefixTable('log_link_visit_action') . " AS log_link_visit_action
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action
-					ON  log_link_visit_action_tracker.idaction_url = log_action.idaction
+					ON  log_link_visit_action.idaction_url = log_action.idaction
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action_title
-					ON  log_link_visit_action_tracker.idaction_name = log_action_title.idaction
+					ON  log_link_visit_action.idaction_name = log_action_title.idaction
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action_event_category
-					ON  log_link_visit_action_tracker.idaction_event_category = log_action_event_category.idaction
+					ON  log_link_visit_action.idaction_event_category = log_action_event_category.idaction
 					LEFT JOIN " . Common::prefixTable('log_action') . " AS log_action_event_action
-					ON  log_link_visit_action_tracker.idaction_event_action = log_action_event_action.idaction
-				WHERE log_link_visit_action_tracker.idvisit = ?
+					ON  log_link_visit_action.idaction_event_action = log_action_event_action.idaction
+				WHERE log_link_visit_action.idvisit = ?
 				ORDER BY server_time ASC
 				LIMIT 0, $actionsLimit
 				 ";
@@ -123,8 +117,8 @@ class Model
     {
         $sql = "SELECT
 						case idgoal when " . GoalManager::IDGOAL_CART
-                            . " then '" . Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_CART
-                            . "' else '" . Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_ORDER . "' end as type,
+            . " then '" . Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_CART
+            . "' else '" . Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_ORDER . "' end as type,
 						idorder as orderId,
 						" . LogAggregator::getSqlRevenue('revenue') . " as revenue,
 						" . LogAggregator::getSqlRevenue('revenue_subtotal') . " as revenueSubTotal,
@@ -143,6 +137,29 @@ class Model
         return $ecommerceDetails;
     }
 
+    /**
+     * @param $idSite
+     * @param $idVisit
+     * @return array
+     * @throws \Exception
+     */
+    public function queryEcommerceConversionsVisitorLifeTimeMetricsForVisitor($idSite, $idVisitor)
+    {
+        $sql = $this->getSqlEcommerceConversionsLifeTimeMetricsForIdGoal(GoalManager::IDGOAL_ORDER);
+        $ecommerceOrders = Db::fetchRow($sql, array($idSite, @Common::hex2bin($idVisitor)));
+
+        $sql = $this->getSqlEcommerceConversionsLifeTimeMetricsForIdGoal(GoalManager::IDGOAL_CART);
+        $abandonedCarts = Db::fetchRow($sql, array($idSite, @Common::hex2bin($idVisitor)));
+
+        return array(
+            'totalEcommerceRevenue'      => $ecommerceOrders['lifeTimeRevenue'],
+            'totalEcommerceConversions'  => $ecommerceOrders['lifeTimeConversions'],
+            'totalEcommerceItems'        => $ecommerceOrders['lifeTimeEcommerceItems'],
+            'totalAbandonedCartsRevenue' => $abandonedCarts['lifeTimeRevenue'],
+            'totalAbandonedCarts'        => $abandonedCarts['lifeTimeConversions'],
+            'totalAbandonedCartsItems'   => $abandonedCarts['lifeTimeEcommerceItems']
+        );
+    }
 
     /**
      * @param $idVisit
@@ -211,8 +228,8 @@ class Model
             $lastMinutes,
             $segment,
             'COUNT(*)',
-            'log_link_visit_action_tracker',
-            'log_link_visit_action_tracker.server_time >= ?'
+            'log_link_visit_action',
+            'log_link_visit_action.server_time >= ?'
         );
     }
 
@@ -489,6 +506,12 @@ class Model
                 }
             } else {
                 $processedDate = Date::factory($date);
+                if ($date == 'today'
+                    || $date == 'now'
+                    || $processedDate->toString() == Date::factory('now', $currentTimezone)->toString()
+                ) {
+                    $processedDate = $processedDate->subDay(1);
+                }
                 $processedPeriod = Period\Factory::build($period, $processedDate);
             }
             $dateStart = $processedPeriod->getDateStart()->setTimezone($currentTimezone);
@@ -514,5 +537,26 @@ class Model
             $where = false;
         }
         return array($whereBind, $where);
+    }
+
+    /**
+     * @param $ecommerceIdGoal
+     * @return string
+     */
+    private function getSqlEcommerceConversionsLifeTimeMetricsForIdGoal($ecommerceIdGoal)
+    {
+        $sql = "SELECT
+                    COALESCE(SUM(" . LogAggregator::getSqlRevenue('revenue') . "), 0) as lifeTimeRevenue,
+                    COUNT(*) as lifeTimeConversions,
+                    COALESCE(SUM(" . LogAggregator::getSqlRevenue('items') . "), 0)  as lifeTimeEcommerceItems
+					FROM  " . Common::prefixTable('log_visit') . " AS log_visit
+					    LEFT JOIN " . Common::prefixTable('log_conversion') . " AS log_conversion
+					    ON log_visit.idvisit = log_conversion.idvisit
+					WHERE
+					        log_visit.idsite = ?
+					    AND log_visit.idvisitor = ?
+						AND log_conversion.idgoal = " . $ecommerceIdGoal . "
+        ";
+        return $sql;
     }
 } 

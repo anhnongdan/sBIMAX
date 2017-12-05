@@ -7,7 +7,7 @@
                 {%- block pageTitle -%}
                     {%- if title is defined %}{{ title }} - {% endif %}
                     {%- if categoryTitle is defined %}{{ categoryTitle }} - {% endif %}
-                    {%- if not isCustomLogo %}Piwik{% endif %}
+                    Piwik
                 {%- endblock -%}
             </title>
             <meta http-equiv="X-UA-Compatible" content="IE=EDGE,chrome=1"/>
@@ -15,28 +15,22 @@
             <meta name="generator" content="Piwik - free/libre analytics platform"/>
             <meta name="description" content="{% block pageDescription %}{% endblock %}"/>
             <meta name="apple-itunes-app" content="app-id=737216887" />
-            <meta name="google-play-app" content="app-id=org.piwik.mobile2">
             {% block meta %}
                 <meta name="robots" content="noindex,nofollow">
             {% endblock %}
 
             {% include "@CoreHome/_favicon.twig" %}
+            {% include "@CoreHome/_applePinnedTabIcon.twig" %}
             {% include "_jsGlobalVariables.twig" %}
             {% include "_jsCssIncludes.twig" %}
 
             {%- if not isCustomLogo %}<link rel="manifest" href="plugins/CoreHome/javascripts/manifest.json">{% endif %}
 
-            <!--[if IE]>
-            <link rel="stylesheet" type="text/css" href="plugins/Morpheus/stylesheets/ieonly.css"/>
-            <![endif]-->
         {% endblock %}
+   <link rel="stylesheet" type="text/css" href="./custom.css" />
+
     </head>
-    <!--[if lt IE 9 ]>
-    <body id="{{ bodyId|default('') }}" ng-app="app" class="old-ie {{ bodyClass|default('') }}">
-    <![endif]-->
-    <!--[if (gte IE 9)|!(IE)]><!-->
     <body id="{{ bodyId|default('') }}" ng-app="app" class="{{ bodyClass|default('') }}">
-    <!--<![endif]-->
 
     {% block body %}
 
@@ -53,12 +47,82 @@
     {% endblock %}
 
         {% include "@CoreHome/_adblockDetect.twig" %}
+<script type="text/javascript">
+var waitForEl = function(selector, callback) {
+	console.log('wait for ' + selector);
+  if (jQuery(selector).length) {
+    callback();
+  } else {
+    setTimeout(function() {
+      waitForEl(selector, callback);
+    }, 100);
+  }
+};
 
-            {# [Thangnt 2017-03-10] SBD info. FOR ALL BIMAX PRODUCT #}
-             <div id="MorpheusTemplateLayout" style="margin:30px 40%;font-size:60%;">
-				<p style="text-align: center"><a href="http://saobacdau.vn">powered by SBD Digital JSC | 2017</a></p>
-             </div>
+/*
+		function hideme(){
+                ["referer", "actions", "visitors"].map(function(n){
+                        document.querySelector('li.menuTab a.item span.icon-reporting-' + n).parentNode.parentNode.style.display = "None";
+                })
+                var nodes = document.querySelector('li.menuTab a.item span.icon-folder-charts').parentNode.parentNode.childNodes[3];
+                nodes.childNodes[8].style.display = "None";
+                nodes.childNodes[10].style.display = "None";
+                document.querySelector('#root nav').style.display = "None";
+                document.querySelector('.dashboard-manager').style.display = "None";
+                document.querySelector('.update_available').style.display = "None";
+//                document.querySelector('.add_new_segment').style.display = "None";
+$($('#widgetMediaAnalyticsgetVideoTitles tr[data-segment-filter="media_title==THVL1+HD"] td:nth-child(5) span')[0]).text('')
+$($('#widgetMediaAnalyticsgetVideoTitles tr[data-segment-filter="media_title==THVL1+HD"] td:nth-child(7) span')[0]).text('')
+$($('#widgetMediaAnalyticsgetVideoTitles tr[data-segment-filter="media_title==THVL1+HD"] td:nth-child(8) span')[0]).text('')
+$($('#widgetMediaAnalyticsgetVideoTitles tr[data-segment-filter="media_title==THVL2+HD"] td:nth-child(5) span')[0]).text('')
+$($('#widgetMediaAnalyticsgetVideoTitles tr[data-segment-filter="media_title==THVL2+HD"] td:nth-child(7) span')[0]).text('')
+$($('#widgetMediaAnalyticsgetVideoTitles tr[data-segment-filter="media_title==THVL2+HD"] td:nth-child(8) span')[0]).text('')
+                }
+*/
+function _hideme() {
+        $('.datatableFooterMessage').each(function(){$(this).hide()});
+        $('#topmenu-coreadminhome').hide();
+        $('#topmenu-login').hide();
+waitForEl('.update_available.piwikSelector', function(){
+        $('.update_available.piwikSelector').each(function(){$(this).hide()});
+})
 
+waitForEl('.dashboard-manager.piwikSelector', function(){
+	$('.dashboard-manager.piwikSelector').each(function(){$(this).hide()});
+})
+waitForEl('#otherPeriods', function(){
+	document.getElementById('period_id_month').parentNode.style.display = 'none';
+	document.getElementById('period_id_year').parentNode.style.display = 'none';
+	document.getElementById('period_id_range').parentNode.style.display = 'none';
+})
+waitForEl('.menu-icon', function(){
+console.log('done');
+$('span.icon-reporting-visitors').parents('li').hide();
+$('span.icon-reporting-actions').parents('li').hide();
+$('span.icon-reporting-referer').parents('li').hide();
+})
+}
+$( document ).ready(_hideme);
+_hideme();
+setTimeout(_hideme,500);
+setTimeout(_hideme,1000);
+setTimeout(_hideme,10000);
+            /*    ["referer", "actions", "visitors"].map(function(n){
+                        document.querySelector('li.menuTab a.item span.icon-reporting-' + n).parentNode.parentNode.style.display = "None";
+                })
+                document.querySelector('.period-type').parentNode.style.display = "None";
+                document.querySelector('.dashboard-manager').style.display = "None";
+                document.querySelector('.update_available').style.display = "None";
 
+		setTimeout(hideme,0);
+		setTimeout(hideme,200);
+		setTimeout(hideme,300);
+		setTimeout(hideme,500);
+		setTimeout(hideme,1000);
+		setTimeout(hideme,2000);
+		setTimeout(hideme,3000);
+		setTimeout(hideme,10000);
+*/
+</script>
     </body>
 </html>

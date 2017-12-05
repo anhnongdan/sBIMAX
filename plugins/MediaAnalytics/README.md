@@ -9,7 +9,7 @@ and apps. But are they being watched? For how long? By whom? From where are they
 conversion rates and sales? Is it better when we place that video somewhere else or replace it with another one? 
 Would another video perform better? When we added subtitles, did it change something? How are our video marketing campaigns doing? Can we justify the cost and time for producing them?*
 
-*If you have similar questions and unknowns, then we have built just the right tool for you. [Media Analytics](https://www.media-analytics.net) tracks your videos and audio and gives you ultimate insights into media usage and how that usage is connected to all your other metrics like conversions, sales, page views and more. We have put a lot of love in building Media Analytics and added so many advanced features it has really given us another view on our media content and we are sure it can do the same for you.* 
+*If you have similar questions and unknowns, then we have built just the right tool for you. [Media Analytics](https://www.media-analytics.net) tracks your videos and audio and gives you ultimate insights into media usage and how that usage is connected to all your other metrics like conversions, sales, page views and more. We have put a lot of love in building Media Analytics and added so many advanced features it has really given us another view on our media content and we are sure it can do the same for you when you have it.* 
 
 *Media Analytics is super simple to install and works in most cases just like that out of the box. 
 It is so well integrated into Piwik you will be surprised. It has all of those features like getting real time 
@@ -24,7 +24,7 @@ share all of them with your colleagues and customers. If you are spending money 
 
 ### About InnoCraft
 
-We at [InnoCraft](https://www.innocraft.com) are the creators of Piwik and know it better than anyone else. This means all plugins are perfectly integrated into Piwik and come with outstanding features and quality to grow your business. We help our clients get started, configure, monitor and make the most of their Piwik analytics service. We also offer unique analytics products and services that help grow your business and meet the needs of small, medium and large businesses alike.
+We at [InnoCraft](https://www.innocraft.com) are the creators of Piwik and know it better than anyone else. This means all plugins are perfectly integrated into Piwik and come with outstanding features and quality to grow your business. We help our clients get started, configure, monitor and make the most of their Piwik analytics service. We also offer unique analytics products and services that help grow your business and meet the needs of medium and large businesses alike.
 
 ### Benefits
 * Get detailed insights into how your visitors use your videos and audio
@@ -71,7 +71,7 @@ Evolution graphs show how the media consumption on your website or app changes o
 
 ### Tracking features
 * Tracks events when you a user plays, pauses, resumes or finishes a video. They can be viewed in the [Visitor Log](https://piwik.org/docs/user-profile/).
-* Currently supports HTML5 Audio & Video, SoundManager 2, JW Player (Flash and HTML5), Video.js, YouTube and Vimeo out of the box.
+* Currently supports HTML5 Audio & Video, SoundManager 2, JW Player (Flash and HTML5), Flowplayer, Video.js, MediaElement.js, YouTube and Vimeo out of the box.
 * Possibility to track the usage of any player by defining a [custom player](https://developer.piwik.org/guides/media-analytics/custom-player).
 * Lets you exclude specific videos from being tracked.
 * Lets you optionally [customize the tracked media title and resource URL](https://developer.piwik.org/guides/media-analytics/options).

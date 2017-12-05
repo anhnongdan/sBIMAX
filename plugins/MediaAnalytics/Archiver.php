@@ -113,10 +113,8 @@ class Archiver extends \Piwik\Plugin\Archiver
         $where = ' AND char_length(log_media.resolution) > 5 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
         $this->makeRegularReport(array(self::RECORD_VIDEO_RESOLUTIONS => new DataArray()), $where, $groupBy);
 
-	//[Thangnt 2017-01-19] Fix archiving problems with MediaAnalytics
-
         // RECORD HOURS
-        $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString("Y-m-d");
+        $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString();
         $timezone = $this->getParams()->getSite()->getTimezone();
 
         $dataArray = new HoursDataArray($date, $timezone);
@@ -488,6 +486,8 @@ class Archiver extends \Piwik\Plugin\Archiver
 
         // just fyi: we cannot add any bind as any argument as it would otherwise break segmentation
         $query = $this->logAggregator->generateQuery($select, $from, $condition, $groupBy, $orderBy);
+	
+	\Piwik\Log::debug('Media Analytics archiver: '.$query['sql']);
 
         return Db::query($query['sql'], $query['bind']);
     }

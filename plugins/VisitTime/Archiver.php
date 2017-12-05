@@ -12,7 +12,6 @@ namespace Piwik\Plugins\VisitTime;
 use Piwik\DataArray;
 use Piwik\DataTable;
 use Piwik\Date;
-use Piwik\Log;
 
 class Archiver extends \Piwik\Plugin\Archiver
 {
@@ -70,29 +69,13 @@ class Archiver extends \Piwik\Plugin\Archiver
 
     protected function convertTimeToLocalTimezone(DataArray &$array)
     {
-        $date = Date::factory($this->getProcessor()->getParams()->getDateStart()->getDateStartUTC())->toString("Y-m-d");
+        $date = Date::factory($this->getProcessor()->getParams()->getDateStart()->getDateStartUTC())->toString();
         $timezone = $this->getProcessor()->getParams()->getSite()->getTimezone();
-        
-        /**
-         * [Thangnt 2016-12-27] Fix the problem with datetime string,
-         * only take the date part for VisitTime plugin.
-         * This is a work-around rather than solution. 
-         * 
-         * This date is just used to append to hour to convert time by standard functions
-         * of Date class, the date doesn't affect the result. 
-         */
-        //if(strlen($date) > 10){
-        //    $date = substr($date, 0,10);
-        //}
-        
-        Log::debug("VisitTime converts server time to local timezone: date= $date .");
-            
+
         $converted = array();
         foreach ($array->getDataArray() as $hour => $stats) {
-            Log::debug("hour: $hour");
             $datetime = $date . ' ' . $hour . ':00:00';
             $hourInTz = (int)Date::factory($datetime, $timezone)->toString('H');
-            Log::debug("After converted: datetime = $hourInTz");
             $converted[$hourInTz] = $stats;
         }
         return new DataArray($converted);

@@ -96,6 +96,7 @@ class Handler
 
     public function commit()
     {
+	var_dump('commit to DB');
         $this->getDb()->commit($this->transactionId);
         $this->requestSetsToRetry = array();
     }
