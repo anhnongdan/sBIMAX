@@ -40,6 +40,11 @@ class Metrics
     const METRIC_TOTAL_VIDEO_PLAYS = 'sum_total_video_plays';
     const METRIC_TOTAL_VIDEO_IMPRESSIONS = 'sum_total_video_impressions';
 
+    const METRIC_VIDEO_PLAYS_25 = 'sum_video_plays_25';
+    const METRIC_VIDEO_PLAYS_50 = 'sum_video_plays_50';
+    const METRIC_VIDEO_PLAYS_75 = 'sum_video_plays_75';
+    const METRIC_VIDEO_PLAYS_100 = 'sum_video_plays_100';
+
     const METRIC_SUM_FULLSCREEN_PLAYS = 'sum_fullscreen_plays';
     const METRIC_SUM_TIME_TO_PLAY = 'sum_time_to_play';
     const METRIC_SUM_TIME_WATCHED = 'sum_time_watched';
@@ -47,4 +52,3 @@ class Metrics
     const METRIC_SUM_MEDIA_LENGTH = 'sum_media_length';
 
 }
-

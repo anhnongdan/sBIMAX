@@ -57,7 +57,7 @@ class Archiver extends \Piwik\Plugin\Archiver
      * @var LogAggregator
      */
     private $logAggregator;
-    
+
     private $maximumRowsInDataTable;
     private $maximumRowsInSubTable;
 
@@ -92,7 +92,7 @@ class Archiver extends \Piwik\Plugin\Archiver
             self::RECORD_AUDIO_RESOURCES => new ResourceDataArray(),
             self::RECORD_AUDIO_GROUPEDRESOURCES => new GroupedDataArray(),
         ), $where, $groupBy, $withSubtableReport = true);
-        
+
         // RECORD VIDEO MEDIA TITLES
         $groupBy = 'log_media.media_title';
         $where = ' AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
@@ -107,7 +107,7 @@ class Archiver extends \Piwik\Plugin\Archiver
         $groupBy = 'log_media.player_name';
         $where = '';
         $this->makeRegularReport(array(self::RECORD_PLAYER_NAMES => new DataArray()), $where, $groupBy);
-        
+
         // RECORD RESOLUTION
         $groupBy = 'log_media.resolution';
         $where = ' AND char_length(log_media.resolution) > 5 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
@@ -251,8 +251,8 @@ class Archiver extends \Piwik\Plugin\Archiver
 
     private function archiveSubtables($baseSelect, $dataArrays, $groupByColumn)
     {
-        $select = $groupByColumn . ' as parentLabel, 
-                  log_media.watched_time as label, 
+        $select = $groupByColumn . ' as parentLabel,
+                  log_media.watched_time as label,
                   count(log_media.watched_time) as ' . Metrics::METRIC_NB_PLAYS;
         $groupBy = $groupByColumn . ', log_media.watched_time';
         $cursor = $this->query($select, $baseSelect['where'], $groupBy, '');
@@ -272,8 +272,8 @@ class Archiver extends \Piwik\Plugin\Archiver
         }
         $cursor->closeCursor();
 
-        $select = $groupByColumn . ' as parentLabel, 
-                  round((media_progress / media_length) * 100) as label, 
+        $select = $groupByColumn . ' as parentLabel,
+                  round((media_progress / media_length) * 100) as label,
                   count(log_media.media_length) as ' . Metrics::METRIC_NB_PLAYS;
         $groupBy = $groupByColumn . ', label';
         $cursor = $this->query($select, $baseSelect['where'] . ' AND log_media.media_length > 0', $groupBy, '');
@@ -288,8 +288,8 @@ class Archiver extends \Piwik\Plugin\Archiver
         }
         $cursor->closeCursor();
 
-        $select = sprintf('%s as parentLabel, 
-                          log_media.resolution as label, 
+        $select = sprintf('%s as parentLabel,
+                          log_media.resolution as label,
                           count(log_media.idvisit) as %s,
                           %s as %s,
                           sum(log_media.watched_time) as %s',
@@ -325,10 +325,10 @@ class Archiver extends \Piwik\Plugin\Archiver
         }
         $cursor->closeCursor();
 
-        $select = sprintf('%s as parentLabel, 
-                          hour(log_media.server_time) as label, 
+        $select = sprintf('%s as parentLabel,
+                          hour(log_media.server_time) as label,
                           count(log_media.idvisit) as %s,
-                          %s as %s, 
+                          %s as %s,
                           sum(log_media.watched_time) as %s',
                           $groupByColumn,
                           Metrics::METRIC_NB_PLAYS,
@@ -378,7 +378,7 @@ class Archiver extends \Piwik\Plugin\Archiver
         $records = array_merge($records, $row);
 
         // PLAYS
-        $select = sprintf('count(log_media.idvisit) as %s, 
+        $select = sprintf('count(log_media.idvisit) as %s,
                           count(distinct log_media.idvisitor) as %s,
                           sum(log_media.watched_time) as %s,
                           %s as %s',
@@ -398,6 +398,20 @@ class Archiver extends \Piwik\Plugin\Archiver
 
         $select = sprintf('count(log_media.idvisit) as %s', Metrics::METRIC_TOTAL_VIDEO_PLAYS);
         $cursor = $this->query($select, $where = ' AND watched_time > 0 AND media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO, $groupBy = '', $orderBy = '');
+        $row = $cursor->fetch();
+        $records = array_merge($records, $row);
+
+        // [Thangnt 2017-12-05] Calc. play percentile
+        $select = sprintf('sum(if(log_media.watched_time >= (log_media.media_length * 0.75), 1, 0)) as %s,
+                            sum(if(log_media.watched_time >= (log_media.media_length * 0.5) AND log_media.watched_time < (log_media.media_length * 0.75), 1, 0)) as %s,
+                            sum(if(log_media.watched_time >= (log_media.media_length*0.25) AND log_media.watched_time < (log_media.media_length * 0.5), 1, 0)) as %s,
+                            sum(if(log_media.watched_time < (log_media.media_length*0.25), 1, 0)) as %s',
+                            Metrics::METRIC_VIDEO_PLAYS_100,
+                            Metrics::METRIC_VIDEO_PLAYS_75,
+                            Metrics::METRIC_VIDEO_PLAYS_50,
+                            Metrics::METRIC_VIDEO_PLAYS_25
+                        );
+        $cursor = $this->query($select, $where = 'AND watched_time > 0 AND media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO, $groupBy = '', $orderBy = '');
         $row = $cursor->fetch();
         $records = array_merge($records, $row);
 
@@ -427,7 +441,7 @@ class Archiver extends \Piwik\Plugin\Archiver
         unset($table);
         unset($serialized);
     }
-    
+
     public function aggregateMultipleReports()
     {
         $recordNames = array(
@@ -486,8 +500,6 @@ class Archiver extends \Piwik\Plugin\Archiver
 
         // just fyi: we cannot add any bind as any argument as it would otherwise break segmentation
         $query = $this->logAggregator->generateQuery($select, $from, $condition, $groupBy, $orderBy);
-	
-	\Piwik\Log::debug('Media Analytics archiver: '.$query['sql']);
 
         return Db::query($query['sql'], $query['bind']);
     }
