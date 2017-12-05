@@ -122,6 +122,7 @@ class API extends \Piwik\Plugin\API
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_50,
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_75,
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_100,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
         ];
 
         $dataTable = $archive->getDataTableFromNumeric($recordNames);
