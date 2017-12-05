@@ -111,6 +111,23 @@ class API extends \Piwik\Plugin\API
         return $dataTable;
     }
 
+    //[Thangnt 2017-12-05] API method for Percentile count
+    public function getPlayCountPercentile($idSite, $period, $date, $segment=false)
+    {
+        Piwik::checkUserHasViewAccess($idSite);
+        $archive = Archive::build($idSite, $period, $date, $segment);
+
+        $recordNames = [
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_25,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_50,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_75,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_100,
+        ];
+
+        $dataTable = $archive->getDataTableFromNumeric($recordNames);
+        return $dataTable;
+    }
+
     public function getCurrentNumPlays($idSite, $lastMinutes, $segment = false)
     {
         Piwik::checkUserHasViewAccess($idSite);
@@ -145,7 +162,7 @@ class API extends \Piwik\Plugin\API
         $serverTime = $this->getServerTimeForXMinutesAgo($lastMinutes);
 
         $rows = $this->logTable->getMostPlays($idSite, $serverTime, $filter_limit, $segment);
-      
+
         if (empty($rows)) {
             return new DataTable();
         }
