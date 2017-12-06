@@ -17,8 +17,9 @@ namespace Piwik\Plugins\MediaAnalytics\Reports;
 
 use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
+use Piwik\Plugins\MediaAnalytics\Metrics;
 
-class GetPlayThrough extends Base
+class GetWatchedPercentile extends Base
 {
     protected function init()
     {
@@ -31,10 +32,6 @@ class GetPlayThrough extends Base
             Metrics::METRIC_VIDEO_PLAYS_50,
             Metrics::METRIC_VIDEO_PLAYS_75,
             Metrics::METRIC_VIDEO_PLAYS_100,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_25,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_50,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_75,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_100,
         );
 
         $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationMediaPlayers');
