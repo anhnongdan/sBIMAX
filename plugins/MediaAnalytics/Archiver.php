@@ -405,11 +405,19 @@ class Archiver extends \Piwik\Plugin\Archiver
         $select = sprintf('sum(if(log_media.watched_time >= (log_media.media_length * 0.75), 1, 0)) as %s,
                             sum(if(log_media.watched_time >= (log_media.media_length * 0.5) AND log_media.watched_time < (log_media.media_length * 0.75), 1, 0)) as %s,
                             sum(if(log_media.watched_time >= (log_media.media_length*0.25) AND log_media.watched_time < (log_media.media_length * 0.5), 1, 0)) as %s,
-                            sum(if(log_media.watched_time < (log_media.media_length*0.25), 1, 0)) as %s',
+                            sum(if(log_media.watched_time < (log_media.media_length*0.25), 1, 0)) as %s,
+                            sum(if(log_media.media_progress >= (log_media.media_length * 0.75), 1, 0)) as %s,
+                            sum(if(log_media.media_progress >= (log_media.media_length * 0.5) AND log_media.watched_time < (log_media.media_length * 0.75), 1, 0)) as %s,
+                            sum(if(log_media.media_progress >= (log_media.media_length*0.25) AND log_media.watched_time < (log_media.media_length * 0.5), 1, 0)) as %s,
+                            sum(if(log_media.media_progress < (log_media.media_length*0.25), 1, 0)) as %s',
                             Metrics::METRIC_VIDEO_PLAYS_100,
                             Metrics::METRIC_VIDEO_PLAYS_75,
                             Metrics::METRIC_VIDEO_PLAYS_50,
-                            Metrics::METRIC_VIDEO_PLAYS_25
+                            Metrics::METRIC_VIDEO_PLAYS_25,
+                            Metrics::METRIC_VIDEO_PLAYS_PRO_100,
+                            Metrics::METRIC_VIDEO_PLAYS_PRO_75,
+                            Metrics::METRIC_VIDEO_PLAYS_PRO_50,
+                            Metrics::METRIC_VIDEO_PLAYS_PRO_25
                         );
         $cursor = $this->query($select, $where = 'AND watched_time > 0 AND media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO, $groupBy = '', $orderBy = '');
         $row = $cursor->fetch();

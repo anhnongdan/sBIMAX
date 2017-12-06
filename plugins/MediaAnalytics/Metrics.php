@@ -45,6 +45,11 @@ class Metrics
     const METRIC_VIDEO_PLAYS_75 = 'sum_video_plays_75';
     const METRIC_VIDEO_PLAYS_100 = 'sum_video_plays_100';
 
+    const METRIC_VIDEO_PLAYS_PRO_25 = 'sum_video_plays_pro_25';
+    const METRIC_VIDEO_PLAYS_PRO_50 = 'sum_video_plays_pro_50';
+    const METRIC_VIDEO_PLAYS_PRO_75 = 'sum_video_plays_pro_75';
+    const METRIC_VIDEO_PLAYS_PRO_100 = 'sum_video_plays_pro_100';
+
     const METRIC_SUM_FULLSCREEN_PLAYS = 'sum_fullscreen_plays';
     const METRIC_SUM_TIME_TO_PLAY = 'sum_time_to_play';
     const METRIC_SUM_TIME_WATCHED = 'sum_time_watched';

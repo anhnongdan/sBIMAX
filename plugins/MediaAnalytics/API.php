@@ -111,8 +111,15 @@ class API extends \Piwik\Plugin\API
         return $dataTable;
     }
 
-    //[Thangnt 2017-12-05] API method for Percentile count
-    public function getPlayCountPercentile($idSite, $period, $date, $segment=false)
+    /**
+     * [Thangnt 2017-12-05] API method for Percentile count
+     * @param  [type]  $idSite  [description]
+     * @param  [type]  $period  [description]
+     * @param  [type]  $date    [description]
+     * @param  boolean $segment [description]
+     * @return [type]           [description]
+     */
+    public function getPlayCountWatchedPercentile($idSite, $period, $date, $segment=false)
     {
         Piwik::checkUserHasViewAccess($idSite);
         $archive = Archive::build($idSite, $period, $date, $segment);
@@ -122,6 +129,31 @@ class API extends \Piwik\Plugin\API
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_50,
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_75,
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_100,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
+        ];
+
+        $dataTable = $archive->getDataTableFromNumeric($recordNames);
+        return $dataTable;
+    }
+
+    /**
+     * [Thangnt 2017-12-05] API method for Percentile count
+     * @param  [type]  $idSite  [description]
+     * @param  [type]  $period  [description]
+     * @param  [type]  $date    [description]
+     * @param  boolean $segment [description]
+     * @return [type]           [description]
+     */
+    public function getPlayCountProgressPercentile($idSite, $period, $date, $segment=false)
+    {
+        Piwik::checkUserHasViewAccess($idSite);
+        $archive = Archive::build($idSite, $period, $date, $segment);
+
+        $recordNames = [
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_25,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_50,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_75,
+            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_100,
             Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
         ];
 
