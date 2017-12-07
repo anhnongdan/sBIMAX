@@ -35,7 +35,7 @@ class GetPlayCountWatchedPercentile extends Base
             Metrics::METRIC_NB_PLAYS,
             Metrics::METRIC_SUM_TIME_WATCHED,
             Metrics::METRIC_SUM_MEDIA_LENGTH,
-            Metrics::METRIC_SUM_FULLSCREEN_PLAY
+            Metrics::METRIC_SUM_FULLSCREEN_PLAYS
         );
 
         $this->order = 40;
@@ -54,7 +54,7 @@ class GetPlayCountWatchedPercentile extends Base
                 Metrics::METRIC_NB_PLAYS,
                 Metrics::METRIC_SUM_TIME_WATCHED,
                 Metrics::METRIC_SUM_MEDIA_LENGTH,
-                Metrics::METRIC_SUM_FULLSCREEN_PLAY
+                Metrics::METRIC_SUM_FULLSCREEN_PLAYS
             );
 
         $view->config->show_pagination_control = false;
