@@ -26,7 +26,7 @@ class GetPlayCountProgressPercentile extends Base
     {
         parent::init();
 
-        $this->name = Piwik::translate('MediaAnalytics_PlayThrough');
+        $this->name = Piwik::translate('MediaAnalytics_PlayThrough').' - How far viewers reached in the video';
 
         $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationMediaPlayers');
         $this->dimension = new PlayThroughRate();

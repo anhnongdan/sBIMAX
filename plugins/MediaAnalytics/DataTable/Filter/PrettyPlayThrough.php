@@ -37,7 +37,7 @@ class PrettyPlayThrough extends DataTable\BaseFilter
             if ($value === 3) {
                 return 'Above 75%';
             }
-            return 'other';
+            return 'Above 75%';
         }));
     }
 }

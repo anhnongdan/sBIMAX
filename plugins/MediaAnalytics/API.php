@@ -138,7 +138,10 @@ class API extends \Piwik\Plugin\API
         // $dataTable = $archive->getDataTableFromNumeric($recordNames);
 
         $dataTable->filter('Piwik\Plugins\MediaAnalytics\DataTable\Filter\PrettyPlayThrough');
-        return $dataTable;
+        $dataTable->filter('GroupBy', array('label', function ($label) {
+		return $label;
+	}));
+	return $dataTable;
     }
 
     /**
@@ -165,7 +168,10 @@ class API extends \Piwik\Plugin\API
         // $dataTable = $archive->getDataTableFromNumeric($recordNames);
 
         $dataTable->filter('Piwik\Plugins\MediaAnalytics\DataTable\Filter\PrettyPlayThrough');
-        return $dataTable;
+        $dataTable->filter('GroupBy', array('label', function ($label) {
+                return $label;
+        }));
+	return $dataTable;
     }
 
     public function getCurrentNumPlays($idSite, $lastMinutes, $segment = false)

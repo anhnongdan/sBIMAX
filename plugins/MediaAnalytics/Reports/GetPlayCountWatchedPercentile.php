@@ -26,7 +26,7 @@ class GetPlayCountWatchedPercentile extends Base
     {
         parent::init();
 
-        $this->name = Piwik::translate('MediaAnalytics_PlayThrough');
+        $this->name = Piwik::translate('MediaAnalytics_PlayThrough').' - Time spent watching/Media length';
 
         $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationMediaPlayers');
         $this->dimension = new PlayThroughRate();
