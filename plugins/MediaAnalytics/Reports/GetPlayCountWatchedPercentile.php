@@ -18,27 +18,25 @@ namespace Piwik\Plugins\MediaAnalytics\Reports;
 use Piwik\Piwik;
 use Piwik\Plugin\ViewDataTable;
 use Piwik\Plugins\MediaAnalytics\Metrics;
+use Piwik\Plugins\MediaAnalytics\Columns\PlayThroughRate;
 
-class GetProgressPercentile extends Base
+class GetPlayCountWatchedPercentile extends Base
 {
     protected function init()
     {
         parent::init();
 
-        $e = new Exception();
-        print_r(str_replace('/path/to/code/', '', $e->getTraceAsString()));
-
         $this->name = Piwik::translate('MediaAnalytics_PlayThrough');
-        $this->dimension = new PlayerName();
-
-        $this->metrics = array(
-            Metrics::METRIC_VIDEO_PLAYS_PRO_25,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_50,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_75,
-            Metrics::METRIC_VIDEO_PLAYS_PRO_100,
-        );
 
         $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationMediaPlayers');
+        $this->dimension = new PlayThroughRate();
+
+        $this->metrics = array(
+            Metrics::METRIC_NB_PLAYS,
+            Metrics::METRIC_SUM_TIME_WATCHED,
+            Metrics::METRIC_SUM_MEDIA_LENGTH,
+            Metrics::METRIC_SUM_FULLSCREEN_PLAY
+        );
 
         $this->order = 40;
 
@@ -47,19 +45,24 @@ class GetProgressPercentile extends Base
 
     public function configureView(ViewDataTable $view)
     {
-
-        $e = new Exception();
-        print_r(str_replace('/path/to/code/', '', $e->getTraceAsString()));
-
         $this->configureTableReport($view);
         //$view->config->addTranslations(array('label' => $this->dimension->getName()));
+        $view->requestConfig->apiMethodToRequestDataTable = 'MediaAnalytics.getPlayCountWatchedPercentile';
+
+        $view->config->columns_to_display = array(
+                'label',
+                Metrics::METRIC_NB_PLAYS,
+                Metrics::METRIC_SUM_TIME_WATCHED,
+                Metrics::METRIC_SUM_MEDIA_LENGTH,
+                Metrics::METRIC_SUM_FULLSCREEN_PLAY
+            );
+
         $view->config->show_pagination_control = false;
         $view->config->show_flatten_table = false;
         $view->config->show_offset_information = false;
         $view->config->show_limit_control = false;
         $view->config->show_search = false;
         $view->config->show_exclude_low_population = false;
-        $view->config->show_footer_message = Piwik::translate('MediaAnalytics_PlayThroughFooterMessage', array('<a rel="noreferrer" target="_blank" href="http://developer.piwik.org/guides/media-analytics/custom-player">', '</a>'));
     }
 
 }

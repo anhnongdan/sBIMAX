@@ -1,0 +1,15 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+GetPlayCountWatchedPercentile	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^class GetPlayCountWatchedPercentile extends Base$/;"	class	line:23
+init	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^    protected function init()$/;"	function	line:25
+name	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^        $this->name = Piwik::translate('MediaAnalytics_PlayThrough');$/;"	variable	line:29
+documentation	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^        $this->documentation = Piwik::translate('MediaAnalytics_ReportDocumentationMediaPlayers');$/;"	variable	line:31
+dimension	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^        $this->dimension = new PlayThroughRate();$/;"	variable	line:32
+metrics	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^        $this->metrics = array($/;"	variable	line:34
+order	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^        $this->order = 40;$/;"	variable	line:41
+subcategoryId	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^        $this->subcategoryId = 'MediaAnalytics_PlayThrough';$/;"	variable	line:43
+configureView	/home/tony/www/piwik_stable_3.0.1/plugins/MediaAnalytics/Reports/GetPlayCountWatchedPercentile.php	/^    public function configureView(ViewDataTable $view)$/;"	function	line:46

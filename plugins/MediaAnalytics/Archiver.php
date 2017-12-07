@@ -44,6 +44,9 @@ class Archiver extends \Piwik\Plugin\Archiver
 
     const RECORD_PLAYER_NAMES = "MediaAnalytics_playernames_record";
 
+    const RECORD_PLAYTHROUGH_WATCHED = "MediaAnalytics_playthrough_watched_record";
+    const RECORD_PLAYTHROUGH_PROGRESS = "MediaAnalytics_playthrough_progress_record";
+
     const NUMERIC_RECORD_PREFIX = 'MediaAnalytics_';
 
     const LABEL_NOT_DEFINED = 'MEDIA_LABEL_NOT_DEFINED';
@@ -112,6 +115,14 @@ class Archiver extends \Piwik\Plugin\Archiver
         $groupBy = 'log_media.resolution';
         $where = ' AND char_length(log_media.resolution) > 5 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
         $this->makeRegularReport(array(self::RECORD_VIDEO_RESOLUTIONS => new DataArray()), $where, $groupBy);
+
+        $groupBy = 'FLOOR((log_media.watched_time/log_media.media_length)/0.25)';
+        $where = ' AND log_media.watched_time > 0 AND log_media.media_length > 0 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
+        $this->makeRegularReport(array(self::RECORD_PLAYTHROUGH_WATCHED => new DataArray()), $where, $groupBy);
+
+        $groupBy = 'FLOOR((log_media.media_progress/log_media.media_length)/0.25)';
+        $where = ' AND log_media.watched_time > 0 AND log_media.media_length > 0 AND log_media.media_type = ' . MediaAnalytics::MEDIA_TYPE_VIDEO;
+        $this->makeRegularReport(array(self::RECORD_PLAYTHROUGH_PROGRESS => new DataArray()), $where, $groupBy);
 
         // RECORD HOURS
         $date = Date::factory($this->getParams()->getDateStart()->getDateStartUTC())->toString();

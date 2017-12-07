@@ -209,4 +209,47 @@ class Controller extends \Piwik\Plugin\Controller
         return $this->renderView($view);
     }
 
+    // public function getPlayCountProgressPercentile()
+    // {
+    //     $report = ReportsProvider::factory('MediaAnalytics', 'getPlayCountProgressPercentile');
+    //     $documentation = $report->getDocumentation();
+    //
+    //     $view = ViewDataTable\Factory::build(HtmlTable::ID, 'MediaAnalytics.getPlayCountProgressPercentile', true);
+    //
+    //     $view->config->columns_to_display = array(
+    //         'label',
+    //         Metrics::METRIC_NB_PLAYS,
+    //         Metrics::METRIC_SUM_TIME_WATCHED,
+    //         Metrics::METRIC_SUM_MEDIA_LENGTH
+    //     );
+    //
+    //     $view->config->show_insights = false;
+    //     //$view->config->disable_row_evolution = true;
+    //     $view->config->addTranslations(array(
+    //       'label' => 'Play Through'));
+    //     $view->requestConfig->apiMethodToRequestDataTable = 'MediaAnalytics.getPlayCountProgressPercentile';
+    //     return $this->renderView($view);
+    // }
+    // public function getPlayCountWatchedPercentile()
+    // {
+    //   $report = ReportsProvider::factory('MediaAnalytics', 'getPlayCountWatchedPercentile');
+    //   $documentation = $report->getDocumentation();
+    //
+    //   $view = ViewDataTable\Factory::build(HtmlTable::ID, 'MediaAnalytics.getPlayCountWatchedPercentile', true);
+    //
+    //   $view->config->columns_to_display = array(
+    //       'label',
+    //       Metrics::METRIC_NB_PLAYS,
+    //       Metrics::METRIC_SUM_TIME_WATCHED,
+    //       Metrics::METRIC_SUM_MEDIA_LENGTH
+    //   );
+    //
+    //   $view->config->show_insights = false;
+    //   //$view->config->disable_row_evolution = true;
+    //   $view->config->addTranslations(array(
+    //     'label' => 'Play Through'));
+    //     $view->requestConfig->apiMethodToRequestDataTable = 'MediaAnalytics.getPlayCountWatchedPercentile';
+    //   return $this->renderView($view);
+    // }
+
 }

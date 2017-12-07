@@ -122,17 +122,22 @@ class API extends \Piwik\Plugin\API
     public function getPlayCountWatchedPercentile($idSite, $period, $date, $segment=false)
     {
         Piwik::checkUserHasViewAccess($idSite);
-        $archive = Archive::build($idSite, $period, $date, $segment);
 
-        $recordNames = [
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_25,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_50,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_75,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_100,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
-        ];
+        $dataTable = $this->getDataTable(Archiver::RECORD_PLAYTHROUGH_WATCHED, $idSite, $period, $date, $segment, false);
 
-        $dataTable = $archive->getDataTableFromNumeric($recordNames);
+        // $archive = Archive::build($idSite, $period, $date, $segment);
+        //
+        // $recordNames = [
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_25,
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_50,
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_75,
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_100,
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
+        // ];
+        //
+        // $dataTable = $archive->getDataTableFromNumeric($recordNames);
+
+        $dataTable->filter('Piwik\Plugins\MediaAnalytics\DataTable\Filter\PrettyPlayThrough');
         return $dataTable;
     }
 
@@ -147,17 +152,19 @@ class API extends \Piwik\Plugin\API
     public function getPlayCountProgressPercentile($idSite, $period, $date, $segment=false)
     {
         Piwik::checkUserHasViewAccess($idSite);
-        $archive = Archive::build($idSite, $period, $date, $segment);
 
-        $recordNames = [
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_25,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_50,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_75,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_100,
-            Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
-        ];
+        $dataTable = $this->getDataTable(Archiver::RECORD_PLAYTHROUGH_PROGRESS, $idSite, $period, $date, $segment, false);
+        // $archive = Archive::build($idSite, $period, $date, $segment);
+        //
+        // $recordNames = [
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_25,
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_VIDEO_PLAYS_PRO_50,
+        //     Archiver::NUMERIC_RECORD_PREFIX . Metrics::METRIC_TOTAL_VIDEO_PLAYS
+        // ];
+        //
+        // $dataTable = $archive->getDataTableFromNumeric($recordNames);
 
-        $dataTable = $archive->getDataTableFromNumeric($recordNames);
+        $dataTable->filter('Piwik\Plugins\MediaAnalytics\DataTable\Filter\PrettyPlayThrough');
         return $dataTable;
     }
 
@@ -291,7 +298,7 @@ class API extends \Piwik\Plugin\API
      * @param string $date
      * @param bool|string $segment
      * @param bool|int $idSubtable
-     * @param bool|string $secondaryDimension
+     * @param bool|string $secondaryDimension$dataTable->filter('Piwik\Plugins\MediaAnalytics\DataTable\Filter\AddResourceSegment');
      * @return DataTable
      */
     public function getVideoTitles($idSite, $period, $date, $segment = false, $idSubtable = false, $secondaryDimension = false)
